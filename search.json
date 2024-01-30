@@ -7,38 +7,59 @@
     "text": "About this blog"
   },
   {
-    "objectID": "posts/bruin/HW0 Blog Post.html",
-    "href": "posts/bruin/HW0 Blog Post.html",
+    "objectID": "posts/bruin/HW0.html",
+    "href": "posts/bruin/HW0.html",
     "title": "Contructing data visualization of the Palmer Penguin data set",
     "section": "",
     "text": "In this blog, I will be explaining how to construct a data visualization of the Palmer Penguins data set."
   },
   {
-    "objectID": "posts/bruin/HW0 Blog Post.html#breakdown-of-the-code",
-    "href": "posts/bruin/HW0 Blog Post.html#breakdown-of-the-code",
+    "objectID": "posts/bruin/HW0.html#breakdown-of-the-code",
+    "href": "posts/bruin/HW0.html#breakdown-of-the-code",
     "title": "Contructing data visualization of the Palmer Penguin data set",
     "section": "Breakdown of the Code",
     "text": "Breakdown of the Code\nTo generate the interactive plot, we will be using the following code to generate the plot. fig = px.scatter(data_frame = dataset, x = “column name 1”, y = “column name 2”, title = “title of plot”, color = “column name 3”, hover_data = [“other columns to display”], width = num, height = num, opacity = num )\nThe arguments used is:  - data_frame = dataset we are using for this plot - x = a specific column from the data set that will be used on the x-axis - y = a sepcific column from the data set tht will be used on the y-axis - title = main title of the plot - color = the color of the points (can be used to seperate different categories i.e. species of penguins) - hover_data = other column information that you would like to display when user hovers over a specific point (note: the columns used for x, y, and color will already be shown when the user hovers over a specific point) - width = the width of the plot - height = the height of the plot - opacity = allows the point on the plot to be sheer\nWe will now be replacing our data set with the respective column names into the code.\n\nfig = px.scatter(data_frame = penguins,\n                 x = \"Body Mass (g)\",\n                 y = \"Flipper Length (mm)\",\n                 title = \"Body Mass and Flipper Length in Penguin Species\",\n                 color = \"Species\",\n                 hover_data = [\"Individual ID\"],\n                 width = 500,\n                 height = 300,\n                 opacity = 0.5\n                )\n\nfig.update_layout(margin={\"r\":0, \"t\":30, \"l\":0, \"b\":0})\nfig.show()\n\n                                                \n\n\nIf we hover our cursor over the points in the plot, we can see information about the specific point. For this particular example, it is able to show you the type of species, the body mass/flipper length for this particular penguin, and the penguin’s ID number."
   },
   {
-    "objectID": "posts/bruin/HW0 Blog Post.html#analysis-of-plot",
-    "href": "posts/bruin/HW0 Blog Post.html#analysis-of-plot",
+    "objectID": "posts/bruin/HW0.html#analysis-of-plot",
+    "href": "posts/bruin/HW0.html#analysis-of-plot",
     "title": "Contructing data visualization of the Palmer Penguin data set",
     "section": "Analysis of Plot",
     "text": "Analysis of Plot\nFrom the outputted plot, we can see that Gentoo Penguins have a bigger body mass and longer flippers compared to Adelie and Chinstrap penguins. In addition, we can see the Adelie and Chinstrap penguins have similar body mass and Flipper length. Therefore, there does seem to be a correlation between flipper length and body mass of the penguins. For penguins with bigger body mass, they seem to have longer flippers, while smaller body mass penguins have shorter flippers. It is possible that the bigger penguins will need to have bigger flippers for balance and support!"
   },
   {
-    "objectID": "posts/bruin/HW0 Blog Post.html#additional-style-choices",
-    "href": "posts/bruin/HW0 Blog Post.html#additional-style-choices",
+    "objectID": "posts/bruin/HW0.html#additional-style-choices",
+    "href": "posts/bruin/HW0.html#additional-style-choices",
     "title": "Contructing data visualization of the Palmer Penguin data set",
     "section": "Additional Style Choices",
     "text": "Additional Style Choices\nIn addition, we added a following line of code: fig.update_layout(margin={“r”:0, “t”:0, “l”:0, “b”:0})\nThis allows the plot to look a lot neater when generated. Let me show you the difference of using it and not using it.\n\nfig = px.scatter(data_frame = penguins,\n                 x = \"Body Mass (g)\",\n                 y = \"Flipper Length (mm)\",\n                 title = \"Body Mass and Flipper Length in Penguin Species\",\n                 color = \"Species\",\n                 hover_data = [\"Individual ID\"],\n                 width = 500,\n                 height = 300,\n                 opacity = 0.5\n                )\n\n# fig.update_layout(margin={\"r\":0, \"t\":0, \"l\":0, \"b\":0})\nfig.show()\n\n                                                \n\n\nAbove is what it looks like when we commented out the line of code. The plot looks squashed and not as clear compared to when we adjusted the layout of the plot. There are still a lot of other arguments that you can add to the plot to customize it. More information can be found on this website: https://plotly.com"
+  },
+  {
+    "objectID": "posts/bruin/index.html",
+    "href": "posts/bruin/index.html",
+    "title": "SQL Tutorial on Climate",
+    "section": "",
+    "text": "In this blog, I will be explaining how to construct a database using the Temp, stations, and country datasets."
+  },
+  {
+    "objectID": "posts/bruin/index.html#interactive-box-plot",
+    "href": "posts/bruin/index.html#interactive-box-plot",
+    "title": "SQL Tutorial on Climate",
+    "section": "Interactive Box Plot",
+    "text": "Interactive Box Plot\nWe will now create an interactive box plot for the new pandas dataframe we have created. Again, to connect to the database and create the pandas dataframe, we use a similar method as the previous example. We want to create a function that will allow users to easily change parameters to look for different information in the databse and generate a plot. For this specific example, we want to find the temperature changes in UCLA and USC through the months.  To create the box plot, we will use the following code: fig = px.box(df, x = “x-values”, y = “y-values”, color = “specific column”, width = m, height = n, kwargs) - df: dataframe used to create the plot - x: column used for the x-axis - y: column used for the y-axis - color: color of the box plots - kwargs: additional parameters passed through by the user\n\ndef station_temp_plot(db_file, station_one, station_two, **kwargs) :\n    df = station_climate_comparison_database(db_file, station_one, station_two)\n    \n    fig = px.box(df,\n             x = \"NAME\",\n             y = \"Temp\",\n             color = \"Month\",\n             width = 600,\n             height = 300,\n            **kwargs)\n\n    # reduce whitespace\n    fig.update_layout(margin={\"r\":0,\"t\":30,\"l\":0,\"b\":10})\n    return fig\n\nNow that we have finished creating our function, we can run our code!\n\nfig = station_temp_plot(\"temps.db\", station_one = \"U_C_L_A\", station_two = \"LOS_ANGELES_DWTN_USC_CAMPUS\",title=\"Temperature Changes Through the Years at UCLA and USC\")\nfig.show()\n\n\n\n\nThrough this plot, we can see the changes in temperatures throughout the year at UCLA and USC. It is clear that it is colder during the in October, November, December, and Janurary while it gets very hot in July for both USC and UCLA. We can see that the trends are typically what we experience in LA. In addition, when we hover over the box plots, we can see information regaring the maximum, median, minimum etc of a specific month."
+  },
+  {
+    "objectID": "posts/bruin/index.html#interactive-scatter-plot",
+    "href": "posts/bruin/index.html#interactive-scatter-plot",
+    "title": "SQL Tutorial on Climate",
+    "section": "Interactive Scatter Plot",
+    "text": "Interactive Scatter Plot\nNow we will be creating an interactive scatter plot! We will again be using the the same code as above to generate our pandas dataframe. In this function (temp_comparison_plot), we want to look at the changes in temperature through the years at UCLA and USC by the seasons. To do so, we will first like to perform some data cleaning. As observed before, our variable Month consisted of 1 to 12, which represents January to December. Since we will like to perform analysis by season, we want to change the months to their respective season. To do so, we will look through the Month column using the .loc function and changing the numbers to the correct season. Now we can generate our plot!\nWe will be using the following code to generate the scatter plot: fig = px.scatter(data_frame = df, x = “Year”, y = “Temp”, color = “Temp”, hover_data = [“LATITUDE”, “LONGITUDE”], size_max = 8, width = 500, height = 300, opacity = 0.5, facet_col = “Month”, facet_row = “NAME”, **kwargs) - data_frame: dataframe used to create the plot - x: column for our x-axis - y: column for our y-axis - color: column corresponding to the color of the points - hover_data: adding more information for the user to see when they hover over a specific point on the plot - facet_col: splitting the plots columnwise using a specific column from the dataframe - facet_row: splitting the plots rowwise using a specific column from the dataframe\n\ndef temp_comparison_plot(db_file, station_one, station_two, **kwargs) :\n    df = station_climate_comparison_database(db_file, station_one, station_two)\n    \n    df.loc[(df['Month']==1) | (df['Month']==2) | (df['Month']==12), 'Month'] = \"Winter\" \n    df.loc[(df['Month']==3) | (df['Month']==4) | (df['Month']==5), 'Month'] = \"Spring\"\n    df.loc[(la['Month']==6) | (df['Month']==7) | (df['Month']==8), 'Month'] = \"Summer\"\n    df.loc[(la['Month']==9) | (df['Month']==10) | (df['Month']==11), 'Month'] = \"Fall\" \n\n    fig = px.scatter(data_frame = df,\n                 x = \"Year\",\n                 y = \"Temp\",\n                 color = \"Temp\",\n                 hover_data = [\"LATITUDE\", \"LONGITUDE\"],\n                 size_max = 8,\n                 width = 500,\n                 height = 300,\n                 opacity = 0.5,\n                 facet_col = \"Month\",\n                 facet_row = \"NAME\",\n                 **kwargs)\n\n    #reduce whitespace\n    fig.update_layout(margin={\"r\":0, \"t\":50, \"l\":0, \"b\":0})\n    return fig\n\nNow that we have finished creating our function, lets run it!\n\nfig = temp_comparison_plot(\"temps.db\", station_one = \"U_C_L_A\", station_two = \"LOS_ANGELES_DWTN_USC_CAMPUS\",title=\"Trends Through the Years by Season in UCLA and USC\")\nfig.show()\n\n\n\n\nFrom the output, we can see the changes in temperature throughout the years. We see that all seasons experienced an increase in temperature from the earliest 1901 to 2021. In addition, UCLA and USC seem to follow the same trends."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "myblog",
     "section": "",
-    "text": "Contructing data visualization of the Palmer Penguin data set\n\n\n\n\n\n\nWeek 1\n\n\nHW0\n\n\n\n\n\n\n\n\n\nJan 20, 2024\n\n\nShaina Wang\n\n\n\n\n\n\nNo matching items"
+    "text": "SQL Tutorial on Climate\n\n\n\n\n\n\nWeek 3\n\n\nHW1\n\n\n\n\n\n\n\n\n\nJan 29, 2024\n\n\nShaina Wang\n\n\n\n\n\n\n\n\n\n\n\n\nContructing data visualization of the Palmer Penguin data set\n\n\n\n\n\n\nWeek 1\n\n\nHW0\n\n\n\n\n\n\n\n\n\nJan 20, 2024\n\n\nShaina Wang\n\n\n\n\n\n\nNo matching items"
   }
 ]
