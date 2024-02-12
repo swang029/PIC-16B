@@ -224,7 +224,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Parsing through the initial website to get to the cast webpage</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># getting to the cast page</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> scrapy.Request(<span class="ss">f"</span><span class="sc">{</span>response<span class="sc">.</span>url<span class="sc">}</span><span class="ss">/cast"</span>, callback <span class="op">=</span> <span class="va">self</span>.parse_full_credits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> scrapy.Request(<span class="ss">f"</span><span class="sc">{</span>response<span class="sc">.</span>url<span class="sc">}</span><span class="ss">/cast"</span>, </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                         callback <span class="op">=</span> <span class="va">self</span>.parse_full_credits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In parse, you can see that we set the first parameter of scrapy.Request to f”{response.url}/cast”. This will take the url that we have selected in the <strong>init</strong> function, and add on /cast to get to the page with all the cast information.</p>
 </section>
@@ -234,14 +235,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="960bb818" class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_full_credits(<span class="va">self</span>, response):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    At the cast webpage, this function will look through all the crew members and get link to their</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    own personal webpage </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    At the cast webpage, this function will look through all the crew members and </span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    get link to their own personal webpage </span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># getting the information from the full cast and members</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> info <span class="kw">in</span> response.css(<span class="st">"ol.people.credits"</span>)[<span class="dv">0</span>].css(<span class="st">"li"</span>) :</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># getting the links to the individual actors</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        actor <span class="op">=</span> info.css(<span class="st">'a::attr(href)'</span>).get() </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> scrapy.Request(<span class="ss">f"https://www.themoviedb.org</span><span class="sc">{</span>actor<span class="sc">}</span><span class="ss">"</span>, callback <span class="op">=</span> <span class="va">self</span>.parse_actor_page)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> scrapy.Request(<span class="ss">f"https://www.themoviedb.org</span><span class="sc">{</span>actor<span class="sc">}</span><span class="ss">"</span>, </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                             callback <span class="op">=</span> <span class="va">self</span>.parse_actor_page)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In parse_full_credits, to get to each individual actor’s page, we will use the following command: response.css(“ol.people.credits”)[0].css(“li”). <br> How do we know we will need to use this command? We will inspect the webpage. <br> In the webpage, when we hover over a line, we can see the corresponding section highlighted on the website. We will follow all the subcategories until we find the link to an cast member’s webpage. <br> To get to that section, we will use response.css(“ol.people.credits”)[0].css(“li”). We will put this under a for loop, which will allow us to parse through each individual actor under Cast. <br> After getting to a single actor, we will use ‘a::attr(href)’ to get the link to the actor’s page. We will then add on the link to https://www.themoviedb.org, by using the following code: f”https://www.themoviedb.org{actor}“. This will send the link to the next function to be parsed.</p>
 </section>
@@ -255,20 +257,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">    It will then take all the movies and TV shows this actor had an Acting role in </span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    and insert it into a dictionary.</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># some actor acting informations are not aligned, therefore we will need to take that into account and use an if statement to find the correct header</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    header_pos <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> response.css(<span class="st">'h3.zero:contains("Acting")'</span>) :</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> response.css(<span class="st">'h3.one:contains("Acting")'</span>) :</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> response.css(<span class="st">'h3.two:contains("Acting")'</span>):</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    actor_acting <span class="op">=</span> response.css(<span class="st">"table.card.credits"</span>)[header_pos]</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> work <span class="kw">in</span> actor_acting.css(<span class="st">"a.tooltip bdi::text"</span>).getall():</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> {<span class="st">"actor"</span> : response.css(<span class="st">"h2.title a::text"</span>).get(), <span class="st">"movie_or_TV_name"</span> : work}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># some actor acting informations are not aligned, therefore we will need </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to take that into account and use an if statement to find the correct header</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    header_pos <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> response.css(<span class="st">'h3.zero:contains("Acting")'</span>) :</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> response.css(<span class="st">'h3.one:contains("Acting")'</span>) :</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> response.css(<span class="st">'h3.two:contains("Acting")'</span>):</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    actor_acting <span class="op">=</span> response.css(<span class="st">"table.card.credits"</span>)[header_pos]</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> work <span class="kw">in</span> actor_acting.css(<span class="st">"a.tooltip bdi::text"</span>).getall():</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> {<span class="st">"actor"</span> : response.css(<span class="st">"h2.title a::text"</span>).get(), </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>               <span class="st">"movie_or_TV_name"</span> : work}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Again, we will look through inspect to see exactly where the information we need is located. We need to be very careful in this section, as some cast webpages are out of order. <br> Specifically, when we look at David Holmes webpage, we see that Acting is not displayed first. Instead, Crew is displayed first on his page. Therefore, to figure out where the Acting section is for each actor, we will use an if statement. <br> Under inspect, we see that h3 contains all the information on the movies and tv shows that actors has been in and whether they were in Acting, Crew, or Production. Therefore, to find the specific h3 that has the information on the movies and tv shows an actor had an Acting role in, we will use the following command: ‘h3.zero:contains(“Acting”)’, ‘h3.one:contains(“Acting”)’ or ‘h3.two:contains(“Acting”)’. This will look through the text in h3 and see if Acting is in the line. If it is, we will then set header_pos. <br> Next, we will use the command response.css(“table.card.credits”)[header_pos] which will use the position of the header to get to the information on the movies and tv shows the actor has been in. <br> To get the movie and tv show name, we will use actor_acting.css(“a.tooltip bdi::text”).getall(). This will get the names of all the movies and tv show’s the actor has been in. <br> Now, we want to add the information into a dictionary. We will for loop through the result and add the titles to the corresponding actor.</p>
 <p>Now that we have completed our code, we can run our code by using the following terminal command: <br> scrapy crawl tmdb_spider -o movies.csv -a subdir=671-harry-potter-and-the-philosopher-s-stone <br> If you would like to parse through another movie, simply replace the subdir to another movie’s link. <br> If you run into any issues, you will have to use an USER_AGENT to make the website not think you are a bot. You can add this command to the terminal command: -s USER_AGENT=’Mozilla/5.0 (Macintosh; Intel Mac OS X 11_5_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15</p>
@@ -434,21 +438,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Now let’s make an interesting visualization from our new dataset! <br> Our goal is to create a barplot that shows all the movies with at least 15 shared actors in the movie.</p>
-<div id="2ab5539d" class="cell" data-execution_count="117">
+<div id="1fe734ea" class="cell" data-execution_count="117">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create a sub dataset that has at least 15 shared actors</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>visualization <span class="op">=</span> df[df[<span class="st">'Number of Shared Actors'</span>] <span class="op">&gt;=</span> <span class="dv">15</span>] </span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># creating the barplot using matplotlib</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.bar(x <span class="op">=</span> visualization[<span class="st">'Movie Name'</span>], height <span class="op">=</span> visualization[<span class="st">'Number of Shared Actors'</span>])</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># setting the title</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Movie Recommendations"</span>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># rotate the names on the x-axis so it is legible</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation <span class="op">=</span> <span class="dv">45</span>, ha<span class="op">=</span><span class="st">'right'</span>)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># labeling the x-axis</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Shared Actors"</span>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># labeling the y-axis</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Movie Name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.bar(x <span class="op">=</span> visualization[<span class="st">'Movie Name'</span>], </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        height <span class="op">=</span> visualization[<span class="st">'Number of Shared Actors'</span>])</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># setting the title</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Movie Recommendations"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># rotate the names on the x-axis so it is legible</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation <span class="op">=</span> <span class="dv">45</span>, ha<span class="op">=</span><span class="st">'right'</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># labeling the x-axis</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Shared Actors"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># labeling the y-axis</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Movie Name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="117">
 <pre><code>Text(0, 0.5, 'Movie Name')</code></pre>
 </div>
