@@ -202,7 +202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="setting-up-the-tmdbspider-class" class="level1">
 <h1>Setting Up the TmdbSpider class</h1>
 <p>In tmdb_spider.py, we have to set up a class.</p>
-<div id="838ea9c9" class="cell">
+<div id="20bbd5e1" class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TmdbSpider(scrapy.Spider):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Setting up a class for our scrapy spider</span></span>
@@ -218,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="parse-function" class="level2">
 <h2 class="anchored" data-anchor-id="parse-function">parse Function</h2>
 <p>Inside our class, we will define another function called parse. This will bring us to the next page that contains the information on the Full Cast and Members.</p>
-<div id="66d0a172" class="cell">
+<div id="78e86604" class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse(<span class="va">self</span>, response):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Parsing through the initial website to get to the cast webpage</span></span>
@@ -231,7 +231,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="parse_full_credits-function" class="level2">
 <h2 class="anchored" data-anchor-id="parse_full_credits-function">parse_full_credits Function</h2>
 <p>From the cast information webpage, we will like to go to each individual actor’s webpage. To do so, we will define another function inside the class called parse_full_credits. What this function will do is go through each actor on the website and call the function parse_actor_page.</p>
-<div id="d50c342b" class="cell">
+<div id="e953c7d3" class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_full_credits(<span class="va">self</span>, response):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    At the cast webpage, this function will look through all the crew members and get link to their</span></span>
@@ -248,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="parse_actor_page-function" class="level2">
 <h2 class="anchored" data-anchor-id="parse_actor_page-function">parse_actor_page Function</h2>
 <p>We will now define another function inside the class called parse_actor_page. This will scrape through a specific actor’s page and find all the movies and tv shows the actor had an Acting role in.</p>
-<div id="f09095ae" class="cell">
+<div id="fae59e1f" class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_actor_page(<span class="va">self</span>, response):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    This function will start at the actor's webpage.</span></span>
@@ -278,12 +278,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="creating-a-table-with-the-csv-file" class="level1">
 <h1>Creating a Table with the CSV File</h1>
 <p>We will now use the csv file we have created to find out the amount of actors that have been in the same movie. To do so, we will need to perform some data cleaning. We will import pandas and our csv file that we have generated in the previous section.</p>
-<div id="50d3cbc1" class="cell" data-execution_count="70">
+<div id="86575658" class="cell" data-execution_count="70">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>movies <span class="op">=</span> pd.read_csv(<span class="st">'movies.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can get a quick overview of our csv file by using the command movies.head()</p>
-<div id="3397b708" class="cell" data-execution_count="71">
+<div id="4956aa89" class="cell" data-execution_count="71">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>movies.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="71">
 <div>
@@ -330,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>To get figure out how many actors are in the same movie. One way to approach this problem is suming the number of times the Movie Name appears. <br> We will first create an empty pandas dataframe with the columns Movie Name and Number of Shared Actors. <br> Next, we will create a for loop to loop through all of the unique Movie Names in our csv file. Then, we will loop through all the names of the movies in the movie_or_TV_name column and increment num by 1 to keep track of the number of times the specific movie name appears. We will then add the final num into our dataframe using the command: df.loc[len(df.index)]. We want to make sure to set num back to 0, so we can start counting from the start again. <br> We also should sort it by the the movie’s with the highest number of shared actors. We will do that by using sort_values and setting the ascending parameter to false. This will sort the Number of Shared Actors by descending order. We can now recommend movies based on the number of shared actors. If the user’s favorite movie is Harry Potter and the Philosopher’s Stone, the next movie we can recommend is Harry Potter and the Chamber of Secrets.</p>
-<div id="4f5281be" class="cell" data-execution_count="73">
+<div id="abfad0c2" class="cell" data-execution_count="73">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All the unique movies titles in the movie_or_TV_name column</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>unique_titles <span class="op">=</span> movies[<span class="st">'movie_or_TV_name'</span>].unique() </span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
