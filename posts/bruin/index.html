@@ -9,7 +9,7 @@
 <meta name="author" content="Shaina Wang">
 <meta name="dcterms.date" content="2024-02-12">
 
-<title>myblog - Web Scrapping TMDB</title>
+<title>myblog - Web Design Using Flask</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -59,7 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -102,9 +102,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -152,10 +149,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Web Scrapping TMDB</h1>
+      <h1 class="title">Web Design Using Flask</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">Week 5</div>
-                <div class="quarto-category">HW2</div>
+                <div class="quarto-category">Week 6</div>
+                <div class="quarto-category">HW3</div>
               </div>
                   </div>
   </div>
@@ -192,285 +189,180 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>In the blog, we will be learning how to web scrape through TMDB and create a csv file using the library scrapy.</p>
-<section id="getting-setup" class="level1">
-<h1>Getting Setup</h1>
-<p>Here is how we set up our webscrapper.</p>
-<p>We want to create a folder, with all of the files needed to scrape through TMDB. We will run the following command into your terminal. <br> scrapy startproject TMDB_scraper <br> cd TMDB_scraper <br></p>
-<p>Next, we want to create a py file inside spider called tmdb_spider.py.</p>
+<p>In this blog, you will be learning how to create a website using flask! The goal is to create a website that contains hyperlinks that will open a text box to allow users to put in a message as well as their name or handle. All of the information will be sorted into a database. There will also be a link to look at all the past messages. <br></p>
+<section id="important-folders-to-create" class="level1">
+<h1>Important Folders to Create</h1>
+<p>First, let us create the folders needed for our website. <br> Create a folder called <code>Flask_Web_Design</code>. This will store all the code and files we will need in order to create our website. We will first create a py file called app. This will have the flask code for our website. Inside the folder, create another folder called <code>templates</code>. Templates will store all of our html files, which is what will creating what is displayed on the website. We are going to create 3 different html files: base, submit, and view. Create another folder called static. Inside, create a css file called style. This allows you to customzie your website and add different fonts, text size, and colors. Now, we are ready to get started!</p>
 </section>
-<section id="setting-up-the-tmdbspider-class" class="level1">
-<h1>Setting Up the TmdbSpider class</h1>
-<p>In tmdb_spider.py, we have to set up a class.</p>
-<div id="156a7fb7" class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TmdbSpider(scrapy.Spider):</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Setting up a class for our scrapy spider</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">'tmdb_spider'</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, subdir<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Initializing the starting point (initial website) to begin the parsing</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.start_urls <span class="op">=</span> [<span class="ss">f"https://www.themoviedb.org/movie/</span><span class="sc">{</span>subdir<span class="sc">}</span><span class="ss">/"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="app.py" class="level1">
+<h1>app.py</h1>
+<p>Let’s begin by adding code into our app.py file. We will create a total of 5 functions: get_message_db(), insert_message(request), random_messages(n), submit(), and view(). <br> We will first import the necessary libraries.</p>
+<div id="f5663835" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> flask <span class="im">import</span> Flask, g, render_template, request</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> Flask(<span class="va">__name__</span>) <span class="co"># creating the name for our website</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/'</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">Creating the base of our website/the home page</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> render_template(<span class="st">'base.html'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>IndentationError: expected an indented block after function definition on line 7 (2588756415.py, line 8)</code></pre>
 </div>
-<p>In the class above, we first name our scrapper, tmdb_spider. You are allowed to name it to whatever you would like. Next we will define an function called <em>init</em>. <br> This is where you set up the base url that you will be scrapping through. For this demo, we will be scrapping through, https://www.themoviedb.org/movie/. <br> The subdir allows the user to scrape through which ever movie they like. In this example, our subdir will be replaced with “671-harry-potter-and-the-philosopher-s-stone”, which can be modified based on the user’s input.</p>
-<section id="parse-function" class="level2">
-<h2 class="anchored" data-anchor-id="parse-function">parse Function</h2>
-<p>Inside our class, we will define another function called parse. This will bring us to the next page that contains the information on the Full Cast and Members.</p>
-<div id="e62eb76e" class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse(<span class="va">self</span>, response):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Parsing through the initial website to get to the cast webpage</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># getting to the cast page</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> scrapy.Request(<span class="ss">f"</span><span class="sc">{</span>response<span class="sc">.</span>url<span class="sc">}</span><span class="ss">/cast"</span>, </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                         callback <span class="op">=</span> <span class="va">self</span>.parse_full_credits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>In parse, you can see that we set the first parameter of scrapy.Request to f”{response.url}/cast”. This will take the url that we have selected in the <strong>init</strong> function, and add on /cast to get to the page with all the cast information.</p>
+<section id="get_message_db" class="level2">
+<h2 class="anchored" data-anchor-id="get_message_db">get_message_db()</h2>
+<p>The purpose of get_message_db() is to connect or create a database that will store all the messages that is being submitted in our website. To do so, we will create a try and except case. If a database exists, the function will connect to the existing one. In the case that it does not exist, we will create a database.</p>
+<div id="5deedfa9" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/message'</span>) <span class="co"># directory to the message page</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_message_db():</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">Creating the database if one does not exist </span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">If a database does exist, we will get the current one</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> g.message_db</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># connecting to our database</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        g.message_db <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">"messages_db.sqlite"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        cursor <span class="op">=</span> g.message_db.cursor()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># if table does not exist, create one</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        cursor.execute(<span class="st">'''CREATE TABLE IF NOT EXISTS messages</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="st">                          (id INTEGER PRIMARY KEY, handle TEXT, message TEXT)'''</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        g.message_db.commit()</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> g.message_db</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>IndentationError: expected an indented block after function definition on line 2 (926931727.py, line 3)</code></pre>
+</div>
+</div>
 </section>
-<section id="parse_full_credits-function" class="level2">
-<h2 class="anchored" data-anchor-id="parse_full_credits-function">parse_full_credits Function</h2>
-<p>From the cast information webpage, we will like to go to each individual actor’s webpage. To do so, we will define another function inside the class called parse_full_credits. What this function will do is go through each actor on the website and call the function parse_actor_page.</p>
-<div id="960bb818" class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_full_credits(<span class="va">self</span>, response):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    At the cast webpage, this function will look through all the crew members and </span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    get link to their own personal webpage </span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># getting the information from the full cast and members</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> info <span class="kw">in</span> response.css(<span class="st">"ol.people.credits"</span>)[<span class="dv">0</span>].css(<span class="st">"li"</span>) :</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># getting the links to the individual actors</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        actor <span class="op">=</span> info.css(<span class="st">'a::attr(href)'</span>).get() </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> scrapy.Request(<span class="ss">f"https://www.themoviedb.org</span><span class="sc">{</span>actor<span class="sc">}</span><span class="ss">"</span>, </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                             callback <span class="op">=</span> <span class="va">self</span>.parse_actor_page)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="insert_messagerequest" class="level2">
+<h2 class="anchored" data-anchor-id="insert_messagerequest">insert_message(request):</h2>
+<p>The purpose of this function is to take in the user inputs from the website. We are asking users for to submit a message as well as their name/handle. We will then get our database through calling the get_message_db() function and inserting what the user submitted to the site. We also have to make sure we close the connection to our database.</p>
+<div id="d1e658e7" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> insert_message(request):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">Inputting the user's submissions into the database</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    handle <span class="op">=</span> request.form[<span class="st">'handle'</span>]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    message <span class="op">=</span> request.form[<span class="st">'message'</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    con <span class="op">=</span> get_message_db()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    cur <span class="op">=</span> con.cursor()</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    cur.execute(<span class="st">'''INSERT INTO messages (handle, message) VALUES (?, ?)'''</span>, (handle, message))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    con.commit() <span class="co"># commit the messages</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    con.close() <span class="co"># CLOSE THE CONNECTION!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>In parse_full_credits, to get to each individual actor’s page, we will use the following command: response.css(“ol.people.credits”)[0].css(“li”). <br> How do we know we will need to use this command? We will inspect the webpage. <br> In the webpage, when we hover over a line, we can see the corresponding section highlighted on the website. We will follow all the subcategories until we find the link to an cast member’s webpage. <br> To get to that section, we will use response.css(“ol.people.credits”)[0].css(“li”). We will put this under a for loop, which will allow us to parse through each individual actor under Cast. <br> After getting to a single actor, we will use ‘a::attr(href)’ to get the link to the actor’s page. We will then add on the link to https://www.themoviedb.org, by using the following code: f”https://www.themoviedb.org{actor}“. This will send the link to the next function to be parsed.</p>
 </section>
-<section id="parse_actor_page-function" class="level2">
-<h2 class="anchored" data-anchor-id="parse_actor_page-function">parse_actor_page Function</h2>
-<p>We will now define another function inside the class called parse_actor_page. This will scrape through a specific actor’s page and find all the movies and tv shows the actor had an Acting role in.</p>
-<div id="5b43bcf2" class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_actor_page(<span class="va">self</span>, response):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    This function will start at the actor's webpage.</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">    It will then take all the movies and TV shows this actor had an Acting role in </span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    and insert it into a dictionary.</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># some actor acting informations are not aligned, therefore we will need </span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to take that into account and use an if statement to find the correct header</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    header_pos <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> response.css(<span class="st">'h3.zero:contains("Acting")'</span>) :</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> response.css(<span class="st">'h3.one:contains("Acting")'</span>) :</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> response.css(<span class="st">'h3.two:contains("Acting")'</span>):</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        header_pos <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    actor_acting <span class="op">=</span> response.css(<span class="st">"table.card.credits"</span>)[header_pos]</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> work <span class="kw">in</span> actor_acting.css(<span class="st">"a.tooltip bdi::text"</span>).getall():</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> {<span class="st">"actor"</span> : response.css(<span class="st">"h2.title a::text"</span>).get(), </span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>               <span class="st">"movie_or_TV_name"</span> : work}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="submit" class="level2">
+<h2 class="anchored" data-anchor-id="submit">submit()</h2>
+<p>The purpose of this function is to ensure the html files are connected to the functions that we have defined. Above our function, we have included an <span class="citation" data-cites="app.route">@app.route</span>(), which creates the add on to our base link. We have two different methods of accessing the site, one through POST and one through GET. The GET when the user tries to get to the submit page by clicking on the hyperlink in the base website. If the user is trying to post, we will use the insert_message() function and then thank the user for their submission.</p>
+<div id="619e4667" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a route to the submit page</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/submit'</span>, methods<span class="op">=</span>[<span class="st">'POST'</span>, <span class="st">'GET'</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> submit():</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">Calling the submit.html base on what the user does</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">Will either open up the submit page or get the information</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">from the user's submission</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> request.method <span class="op">==</span> <span class="st">'GET'</span>:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> render_template(<span class="st">"submit.html"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># calling insert_message() to input submission to database</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        insert_message(request) </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># thank you note to user</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        thanks <span class="op">=</span> <span class="st">"Thank you for your submission!"</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> render_template(<span class="st">"submit.html"</span>, thanks <span class="op">=</span> thanks)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Again, we will look through inspect to see exactly where the information we need is located. We need to be very careful in this section, as some cast webpages are out of order. <br> Specifically, when we look at David Holmes webpage, we see that Acting is not displayed first. Instead, Crew is displayed first on his page. Therefore, to figure out where the Acting section is for each actor, we will use an if statement. <br> Under inspect, we see that h3 contains all the information on the movies and tv shows that actors has been in and whether they were in Acting, Crew, or Production. Therefore, to find the specific h3 that has the information on the movies and tv shows an actor had an Acting role in, we will use the following command: ‘h3.zero:contains(“Acting”)’, ‘h3.one:contains(“Acting”)’ or ‘h3.two:contains(“Acting”)’. This will look through the text in h3 and see if Acting is in the line. If it is, we will then set header_pos. <br> Next, we will use the command response.css(“table.card.credits”)[header_pos] which will use the position of the header to get to the information on the movies and tv shows the actor has been in. <br> To get the movie and tv show name, we will use actor_acting.css(“a.tooltip bdi::text”).getall(). This will get the names of all the movies and tv show’s the actor has been in. <br> Now, we want to add the information into a dictionary. We will for loop through the result and add the titles to the corresponding actor.</p>
-<p>Now that we have completed our code, we can run our code by using the following terminal command: <br> scrapy crawl tmdb_spider -o movies.csv -a subdir=671-harry-potter-and-the-philosopher-s-stone <br> If you would like to parse through another movie, simply replace the subdir to another movie’s link. <br> If you run into any issues, you will have to use an USER_AGENT to make the website not think you are a bot. You can add this command to the terminal command: -s USER_AGENT=’Mozilla/5.0 (Macintosh; Intel Mac OS X 11_5_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15</p>
-<p>Afterwards, you should have a file generated that has all of the information you need.</p>
+</section>
+<section id="random_messagesn" class="level2">
+<h2 class="anchored" data-anchor-id="random_messagesn">random_messages(n)</h2>
+<p>The purpose of this function is to get the messages and names of the users that have posted on our site. To do so, we will need to establish a connection to our database. Once the connection has been made, we will get all of the messages and handles.</p>
+<div id="ab5deb87" class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_messages(n):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">Connecting to our database and getting the handle and messages</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">from each user</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># connect to database</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    con <span class="op">=</span> get_message_db()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    cur <span class="op">=</span> con.cursor()</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># extracting information</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    cur.execute(<span class="st">'''SELECT handle, message FROM messages ORDER BY RANDOM() LIMIT ?'''</span>, (n,))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> cur.fetchall()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># close our connection</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    cur.close()</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> messages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="view" class="level2">
+<h2 class="anchored" data-anchor-id="view">view()</h2>
+<p>The purpose of the view() function is to create a route form the base website that shows the different messages that have been submitted by previous users. To do so, we will all the random_messages(n) function to get the information we need. In this case, I have made it so that n equals 5. Therefore, we will be getting 5 random messages from our database. Then we will set a connection to the view.html to upload the messages we have extracted.</p>
+<div id="eb07c02a" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># creating a new route from base website</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/view'</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> view():</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">Getting 5 random messages from database and uploading</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">it to the view.html</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> random_messages(<span class="dv">5</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> render_template(<span class="st">"view.html"</span>, messages<span class="op">=</span>messages)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    app.run(debug<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>That is all for the app.py files! The next section will be talking about the html files in our templates folder.</p>
 </section>
 </section>
-<section id="creating-a-table-with-the-csv-file" class="level1">
-<h1>Creating a Table with the CSV File</h1>
-<p>We will now use the csv file we have created to find out the amount of actors that have been in the same movie. To do so, we will need to perform some data cleaning. We will import pandas and our csv file that we have generated in the previous section.</p>
-<div id="61d57dee" class="cell" data-execution_count="70">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>movies <span class="op">=</span> pd.read_csv(<span class="st">'movies.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="submit.html" class="level1">
+<h1>submit.html</h1>
+<p>In our templates folder, we have create a file called submit.html. (In this blog post, I will only be showing the submit.html code. However, you can find the rest of the code on my github: https://github.com/swang029/flask_app.git). The purpose of this file is to create the text boxes for the user to submit their messages as well as their name/handle. Below, I have included comments on what each line of code does in this file.</p>
+<div id="a611ddf3" class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># establishes a connection to the base.html file</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>{<span class="op">%</span> extends <span class="st">'base.html'</span> <span class="op">%</span>}</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># creates a block for the header of this route</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>{<span class="op">%</span> block header <span class="op">%</span>}</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># put in what we would like the header to be</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in this case, it is "Submit Message"</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>h1<span class="op">&gt;</span>{<span class="op">%</span> block title <span class="op">%</span>}Submit Message{<span class="op">%</span> endblock <span class="op">%</span>}<span class="op">&lt;/</span>h1<span class="op">&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># we will then end the block for the header</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>{<span class="op">%</span> endblock <span class="op">%</span>}</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># next, we create a new block for the content</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>{<span class="op">%</span> block content <span class="op">%</span>}</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the method of the form is a post</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>form method<span class="op">=</span><span class="st">"post"</span><span class="op">&gt;</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># we add a title above our text box</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>label <span class="cf">for</span><span class="op">=</span><span class="st">"message"</span><span class="op">&gt;</span>Your message:<span class="op">&lt;/</span>label<span class="op">&gt;&lt;</span>br<span class="op">&gt;</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># this line will allow users to input their message</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span><span class="bu">input</span> <span class="bu">type</span><span class="op">=</span><span class="st">"text"</span> name<span class="op">=</span><span class="st">"message"</span> <span class="bu">id</span><span class="op">=</span><span class="st">"message"</span><span class="op">&gt;&lt;</span>br<span class="op">&gt;</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># we add a title above our next text box</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>label <span class="cf">for</span><span class="op">=</span><span class="st">"handle"</span><span class="op">&gt;</span>Your name <span class="kw">or</span> handle:<span class="op">&lt;/</span>label<span class="op">&gt;&lt;</span>br<span class="op">&gt;</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># this line allows users to input their name/handle</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span><span class="bu">input</span> <span class="bu">type</span><span class="op">=</span><span class="st">"text"</span> name<span class="op">=</span><span class="st">"handle"</span> <span class="bu">id</span><span class="op">=</span><span class="st">"handle"</span><span class="op">&gt;&lt;</span>br<span class="op">&gt;</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># then create a submit message button</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span><span class="bu">input</span> <span class="bu">type</span><span class="op">=</span><span class="st">"submit"</span> value<span class="op">=</span><span class="st">"Submit message"</span><span class="op">&gt;</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this line shows that we are done with our form</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;/</span>form<span class="op">&gt;</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co"># we will then end the block for our contnet</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>{<span class="op">%</span> endblock <span class="op">%</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We can get a quick overview of our csv file by using the command movies.head()</p>
-<div id="ce0c3e22" class="cell" data-execution_count="71">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>movies.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="71">
-<div>
-
-
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">actor</th>
-<th data-quarto-table-cell-role="th">movie_or_TV_name</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>Daniel Radcliffe</td>
-<td>Have I Got a Bit More News for You</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>Daniel Radcliffe</td>
-<td>David Holmes: The Boy Who Lived</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>Daniel Radcliffe</td>
-<td>100 Years of Warner Bros.</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>Daniel Radcliffe</td>
-<td>Mulligan</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>Daniel Radcliffe</td>
-<td>Digman!</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>To get figure out how many actors are in the same movie. One way to approach this problem is suming the number of times the Movie Name appears. <br> We will first create an empty pandas dataframe with the columns Movie Name and Number of Shared Actors. <br> Next, we will create a for loop to loop through all of the unique Movie Names in our csv file. Then, we will loop through all the names of the movies in the movie_or_TV_name column and increment num by 1 to keep track of the number of times the specific movie name appears. We will then add the final num into our dataframe using the command: df.loc[len(df.index)]. We want to make sure to set num back to 0, so we can start counting from the start again. <br> We also should sort it by the the movie’s with the highest number of shared actors. We will do that by using sort_values and setting the ascending parameter to false. This will sort the Number of Shared Actors by descending order. We can now recommend movies based on the number of shared actors. If the user’s favorite movie is Harry Potter and the Philosopher’s Stone, the next movie we can recommend is Harry Potter and the Chamber of Secrets.</p>
-<div id="eca3496f" class="cell" data-execution_count="79">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All the unique movies titles in the movie_or_TV_name column</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>unique_titles <span class="op">=</span> movies[<span class="st">'movie_or_TV_name'</span>].unique() </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating an empty dataframe to put all the information inside</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(columns<span class="op">=</span>[<span class="st">'Movie Name'</span>, <span class="st">'Number of Shared Actors'</span>])</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize num for the for loop</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Looking at a unique title at a time</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> unique_titles :</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># comparing it to all the names in the movie_or_TV_name column</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> movies[<span class="st">'movie_or_TV_name'</span>] :</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># if there is a match</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (j <span class="op">==</span> i) :</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            <span class="co"># will increment num by 1</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            num <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># adding the num and the movie name to our dataframe</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    df.loc[<span class="bu">len</span>(df.index)] <span class="op">=</span> [j, num] </span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># reset num to 0 for the next movie</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    num <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co"># sort the number of shared actors by descending order</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.sort_values([<span class="st">'Number of Shared Actors'</span>], ascending<span class="op">=</span>[<span class="va">False</span>])</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Number of Shared Actors'</span>] <span class="op">=</span> pd.to_numeric(df[<span class="st">'Number of Shared Actors'</span>])</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="79">
-<div>
-
-
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Movie Name</th>
-<th data-quarto-table-cell-role="th">Number of Shared Actors</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">77</td>
-<td>Harry Potter and the Philosopher's Stone</td>
-<td>62</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">75</td>
-<td>Harry Potter and the Chamber of Secrets</td>
-<td>36</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">57</td>
-<td>Creating the World of Harry Potter</td>
-<td>35</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">72</td>
-<td>Harry Potter and the Prisoner of Azkaban</td>
-<td>25</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">64</td>
-<td>Harry Potter and the Order of the Phoenix</td>
-<td>23</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">863</td>
-<td>Girls' Night</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">861</td>
-<td>Talking Heads 2</td>
-<td>1</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">860</td>
-<td>Dinnerladies</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">859</td>
-<td>Jack and the Beanstalk: The ITV Pantomime</td>
-<td>1</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2256</td>
-<td>Today</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-
-<p>2257 rows × 2 columns</p>
-</div>
-</div>
-</div>
-<p>Now let’s make an interesting visualization from our new dataset! <br> Our goal is to create a barplot that shows all the movies with at least 15 shared actors in the movie.</p>
-<div id="1fe734ea" class="cell" data-execution_count="117">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create a sub dataset that has at least 15 shared actors</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>visualization <span class="op">=</span> df[df[<span class="st">'Number of Shared Actors'</span>] <span class="op">&gt;=</span> <span class="dv">15</span>] </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># creating the barplot using matplotlib</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.bar(x <span class="op">=</span> visualization[<span class="st">'Movie Name'</span>], </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        height <span class="op">=</span> visualization[<span class="st">'Number of Shared Actors'</span>])</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># setting the title</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Movie Recommendations"</span>)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># rotate the names on the x-axis so it is legible</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation <span class="op">=</span> <span class="dv">45</span>, ha<span class="op">=</span><span class="st">'right'</span>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># labeling the x-axis</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Shared Actors"</span>)</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># labeling the y-axis</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Movie Name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="117">
-<pre><code>Text(0, 0.5, 'Movie Name')</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/cell-9-output-2.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>We have now created a barplot that shows the recommended movies based on the number of shared actors!</p>
 </section>
-<section id="final-takeaway" class="level1">
-<h1>Final Takeaway:</h1>
-<p>That is how we use scrapy to webscrape TMDB! We can use a similar method to parse through other websites as well!</p>
+<section id="demo" class="level1">
+<h1>Demo</h1>
+<p><img src="index_files/figure-html/5652ea88-1-submit.png" class="img-fluid" alt="submit.png"> Below, I will show you what the completed website looks like! This is an example of a user putting in a message and their name into the submission form.</p>
+<p><img src="index_files/figure-html/09dc91c7-1-view.png" class="img-fluid" alt="view.png"> After the user has submitted the form, if they click on the link to “View Messages”, they will be able to see 5 random messages that have been submitted before.</p>
+</section>
+<section id="final-takeaways" class="level1">
+<h1>Final Takeaways:</h1>
+<p>That is all on how to create a website using flask. To find the completed code, please visit my GitHub: https://github.com/swang029/flask_app.git!</p>
 
 
 </section>
