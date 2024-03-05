@@ -20,27 +20,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,77 +100,19 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">myblog</span>
     </a>
   </div>
@@ -149,7 +123,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -170,291 +144,28 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">myblog</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page-left">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(7)</span></div><div class="category" data-category="HW0">HW0 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="HW1">HW1 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="HW2">HW2 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="HW3">HW3 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="HW4">HW4 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="HW5">HW5 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Week 1">Week 1 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Week 3">Week 3 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Week 5">Week 5 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Week 6">Week 6 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Week 7">Week 7 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Week 9">Week 9 <span class="quarto-category-count">(1)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
-
-
-
-
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1709594518712">
-<div class="thumbnail">
-<p><a href="./posts/bruin/hw5.html" class="no-external"></a></p><a href="./posts/bruin/hw5.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/bruin/hw5.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/bruin/hw5.html" class="no-external"></a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/bruin/hw5.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./posts/bruin/hw5.html" class="no-external">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im">import</span> os</span>
-<span id="cb1-2"><span class="im">from</span> keras <span class="im">import</span> utils</span>
-<span id="cb1-3"><span class="im">import</span> tensorflow_datasets <span class="im">as</span> tfds</span></code></pre></div>
+<div id="41f003bb" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras <span class="im">import</span> utils</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow_datasets <span class="im">as</span> tfds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>ModuleNotFoundError: No module named 'keras'</code></pre>
 </div>
-</a>
 </div>
-</div>
-<div class="metadata">
-<p><a href="./posts/bruin/hw5.html" class="no-external"></a></p><a href="./posts/bruin/hw5.html" class="no-external">
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Week 9,HW5" data-listing-date-sort="1709539200000" data-listing-file-modified-sort="1709623664962" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="986">
-<div class="thumbnail">
-<p><a href="./posts/bruin/index.html" class="no-external"></a></p><a href="./posts/bruin/index.html" class="no-external">
-<p class="card-img-top"><img src="posts/bruin/index_files/figure-html/cell-7-output-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/bruin/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/bruin/index.html" class="no-external">Image Classification</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/bruin/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Week 9'); return false;">
-Week 9
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('HW5'); return false;">
-HW5
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/bruin/index.html" class="no-external">In this blog post, you will be learning how to create different image classification modles in Keras to classify cats and dogs.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/bruin/index.html" class="no-external">
-<div class="listing-date">
-Mar 4, 2024
-</div>
-<div class="listing-author">
-Shaina Wang
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Week 7,HW4" data-listing-date-sort="1708675200000" data-listing-file-modified-sort="1708748325235" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1391">
-<div class="thumbnail">
-<p><a href="./posts/bruin/HW4.html" class="no-external"></a></p><a href="./posts/bruin/HW4.html" class="no-external">
-<p class="card-img-top"><img src="posts/bruin/HW4_files/figure-html/cell-6-output-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/bruin/HW4.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/bruin/HW4.html" class="no-external">Heat Diffusion</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/bruin/HW4.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Week 7'); return false;">
-Week 7
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('HW4'); return false;">
-HW4
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/bruin/HW4.html" class="no-external">In this blog, I will be going over how to simulate two-dimensional heat diffusion in various ways. <br> We will use the equation below to simulate two-dimensional heat diffusion…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/bruin/HW4.html" class="no-external">
-<div class="listing-date">
-Feb 23, 2024
-</div>
-<div class="listing-author">
-Shaina Wang
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="Week 6,HW3" data-listing-date-sort="1707724800000" data-listing-file-modified-sort="1708326242866" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="743">
-<div class="thumbnail">
-<p><a href="./posts/bruin/HW3.html" class="no-external"></a></p><a href="./posts/bruin/HW3.html" class="no-external">
-<p class="card-img-top"><img src="posts/bruin/HW3_files/figure-html/5652ea88-1-submit.png" alt="submit.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/bruin/HW3.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/bruin/HW3.html" class="no-external">Web Design Using Flask</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/bruin/HW3.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Week 6'); return false;">
-Week 6
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('HW3'); return false;">
-HW3
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/bruin/HW3.html" class="no-external">In this blog, you will be learning how to create a website using flask! The goal is to create a website that contains hyperlinks that will open a text box to allow users to…<br></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/bruin/HW3.html" class="no-external">
-<div class="listing-date">
-Feb 12, 2024
-</div>
-<div class="listing-author">
-Shaina Wang
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="Week 5,HW2" data-listing-date-sort="1707724800000" data-listing-file-modified-sort="1708320936518" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162">
-<div class="thumbnail">
-<p><a href="./posts/bruin/HW2.html" class="no-external"></a></p><a href="./posts/bruin/HW2.html" class="no-external">
-<p class="card-img-top"><img src="posts/bruin/HW2_files/figure-html/cell-9-output-2.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/bruin/HW2.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/bruin/HW2.html" class="no-external">Web Scrapping TMDB</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/bruin/HW2.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Week 5'); return false;">
-Week 5
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('HW2'); return false;">
-HW2
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/bruin/HW2.html" class="no-external">In the blog, we will be learning how to web scrape through TMDB and create a csv file using the library scrapy.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/bruin/HW2.html" class="no-external">
-<div class="listing-date">
-Feb 12, 2024
-</div>
-<div class="listing-author">
-Shaina Wang
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="Week 3,HW1" data-listing-date-sort="1706515200000" data-listing-file-modified-sort="1707730200470" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2069">
-<div class="thumbnail">
-<p><a href="./posts/bruin/HW1.html" class="no-external"></a></p><a href="./posts/bruin/HW1.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/bruin/HW1.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/bruin/HW1.html" class="no-external">SQL Tutorial on Climate</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/bruin/HW1.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Week 3'); return false;">
-Week 3
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('HW1'); return false;">
-HW1
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/bruin/HW1.html" class="no-external">In this blog, I will be explaining how to construct a database using the Temp, stations, and country datasets.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/bruin/HW1.html" class="no-external">
-<div class="listing-date">
-Jan 29, 2024
-</div>
-<div class="listing-author">
-Shaina Wang
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-categories="Week 1,HW0" data-listing-date-sort="1705737600000" data-listing-file-modified-sort="1706594883970" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="771">
-<div class="thumbnail">
-<p><a href="./posts/bruin/HW0.html" class="no-external"></a></p><a href="./posts/bruin/HW0.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/bruin/HW0.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/bruin/HW0.html" class="no-external">Contructing data visualization of the Palmer Penguin data set</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/bruin/HW0.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Week 1'); return false;">
-Week 1
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('HW0'); return false;">
-HW0
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/bruin/HW0.html" class="no-external">In this blog, I will be explaining how to construct a data visualization of the Palmer Penguins data set.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/bruin/HW0.html" class="no-external">
-<div class="listing-date">
-Jan 20, 2024
-</div>
-<div class="listing-author">
-Shaina Wang
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+
+
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
