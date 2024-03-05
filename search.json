@@ -105,13 +105,6 @@
     "text": "view()\nThe purpose of the view() function is to create a route form the base website that shows the different messages that have been submitted by previous users. To do so, we will all the random_messages(n) function to get the information we need. In this case, I have made it so that n equals 5. Therefore, we will be getting 5 random messages from our database. Then we will set a connection to the view.html to upload the messages we have extracted.\n\n# creating a new route from base website\n@app.route('/view')\ndef view():\n\"\"\"\nGetting 5 random messages from database and uploading\nit to the view.html\n\"\"\"\n    messages = random_messages(5)\n    return render_template(\"view.html\", messages=messages)\n        \nif __name__ == '__main__':\n    app.run(debug=True)\n\nThat is all for the app.py files! The next section will be talking about the html files in our templates folder."
   },
   {
-    "objectID": "posts/bruin/hw5.html",
-    "href": "posts/bruin/hw5.html",
-    "title": "myblog",
-    "section": "",
-    "text": "import os\nfrom keras import utils\nimport tensorflow_datasets as tfds\n\nModuleNotFoundError: No module named 'keras'"
-  },
-  {
     "objectID": "posts/bruin/HW1.html",
     "href": "posts/bruin/HW1.html",
     "title": "SQL Tutorial on Climate",
