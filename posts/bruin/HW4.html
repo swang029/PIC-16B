@@ -193,7 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"> <msubsup> <mi>u</mi> <mrow data-mjx-texclass="ORD"> <mi>i</mi> <mo>,</mo> <mi>j</mi> </mrow> <mrow data-mjx-texclass="ORD"> <mi>k</mi> <mo>+</mo> <mn>1</mn> </mrow> </msubsup> <mo>≈</mo> <msubsup> <mi>u</mi> <mrow data-mjx-texclass="ORD"> <mi>i</mi> <mo>,</mo> <mi>j</mi> </mrow> <mi>k</mi> </msubsup> <mo>+</mo> <mi>ϵ</mi> <mrow data-mjx-texclass="INNER"> <mo data-mjx-texclass="OPEN">(</mo> <msubsup> <mi>u</mi> <mrow data-mjx-texclass="ORD"> <mi>i</mi> <mo>+</mo> <mn>1</mn> <mo>,</mo> <mi>j</mi> </mrow> <mi>k</mi> </msubsup> <mo>+</mo> <msubsup> <mi>u</mi> <mrow data-mjx-texclass="ORD"> <mi>i</mi> <mo>−</mo> <mn>1</mn> <mo>,</mo> <mi>j</mi> </mrow> <mi>k</mi> </msubsup> <mo>+</mo> <msubsup> <mi>u</mi> <mrow data-mjx-texclass="ORD"> <mi>i</mi> <mo>,</mo> <mi>j</mi> <mo>+</mo> <mn>1</mn> </mrow> <mi>k</mi> </msubsup> <mo>+</mo> <msubsup> <mi>u</mi> <mrow data-mjx-texclass="ORD"> <mi>i</mi> <mo>,</mo> <mi>j</mi> <mo>−</mo> <mn>1</mn> </mrow> <mi>k</mi> </msubsup> <mo>−</mo> <mn>4</mn> <msubsup> <mi>u</mi> <mrow data-mjx-texclass="ORD"> <mi>i</mi> <mo>,</mo> <mi>j</mi> </mrow> <mi>k</mi> </msubsup> <mo data-mjx-texclass="CLOSE">)</mo> </mrow> <mo>,</mo> </math></p>
 <p>For this specific example, we will be setting N = 101 and epilson = 0.2</p>
 <p>To begin, let’s import all the necessary libraries.</p>
-<div id="6fe44a6c" class="cell" data-execution_count="20">
+<div id="6fe44a6c" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> timeit</span>
@@ -205,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="matrix-multiplication" class="level1">
 <h1>Matrix Multiplication</h1>
 <p>First, let’s try to create this simulation using matrix multiplication.</p>
-<div id="bbba9ada" class="cell" data-execution_count="21">
+<div id="bbba9ada" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> heat_equation <span class="im">import</span> advance_time_matvecmul</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> inspect</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(inspect.getsource(advance_time_matvecmul))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -228,7 +228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The purpose of the function is to return the updated matrix after one timestep. We will later use this function to iterate through 2700 times to observe the heat diffusion.</p>
 <p>Next, let us create a function called get_A(N).</p>
-<div id="141acd94" class="cell" data-execution_count="24">
+<div id="141acd94" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> heat_equation <span class="im">import</span> get_A</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> inspect</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(inspect.getsource(get_A))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -249,7 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>This function will take in the dimensions we have preset, which is 101 and generate a matrix without all-zero rows or all-zero columns.</p>
 <p>Now, let us use the two functions we have defined above to create a simulation of the heat diffusion after 2700 iterations. Let’s also output the heat diffusion after ever 300 iterations. Therefore, we should create an empty list to store NxN grid state. Since we will be creating this simulation in various ways, we should also calculate the amount of time it takes for this simulation to run. In the end, we will compare and see which method takes the least amount of time!</p>
-<div id="921c8f4e" class="cell" data-execution_count="36">
+<div id="921c8f4e" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">101</span> <span class="co"># dimension</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.2</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plots <span class="op">=</span> [] <span class="co"># empty list</span></span>
@@ -269,11 +269,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>execution_time <span class="op">=</span> stop <span class="op">-</span> start <span class="co"># calculating the time it took to run</span></span>
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Time elapsed:"</span>, execution_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time elapsed: 21.823670458048582</code></pre>
+<pre><code>Time elapsed: 23.147153500001878</code></pre>
 </div>
 </div>
 <p>To observe our plots, we can run the for loop below to visualize the heat diffusion.</p>
-<div id="01834c96" class="cell" data-execution_count="26">
+<div id="01834c96" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(plots)) :</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">3</span>, <span class="dv">3</span>, i<span class="op">+</span><span class="dv">1</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    plt.imshow(plots[i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -291,26 +291,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Sparse matrix in JAX</h1>
 <p>Let’s use the data structure that exploits a lot of zeros in the matrix A, which utiliziees the sparse matrix data structures. In addition, the JAX package holds an experimental sparse matrix support through utilizing jnp.</p>
 <p>We can use the same function advance_time_matvecmul to get the NxN grid state. However, let’s use a different method to create the matrix. We will define a function called get_sparse_A.</p>
-<div id="132f7f0b" class="cell" data-execution_count="27">
+<div id="132f7f0b" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> heat_equation <span class="im">import</span> get_sparse_A</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(inspect.getsource(get_sparse_A))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>def get_A(N) :
+<pre><code>def get_sparse_A(N) :
     """
     Takes in the dimensions, N
-    Creates the corresponding matrix
+    Utilizies previously defined function and changing it to a jnp array
+    Puts the array into a sparse array
     """
-    n = N * N
-    diagonals = [-4 * np.ones(n), np.ones(n-1), np.ones(n-1), np.ones(n-N), np.ones(n-N)]
-    diagonals[1][(N-1)::N] = 0
-    diagonals[2][(N-1)::N] = 0
-    A = np.diag(diagonals[0]) + np.diag(diagonals[1], 1) + np.diag(diagonals[2], -1) + np.diag(diagonals[3], N) + np.diag(diagonals[4], -N)
-    return A
+    A = get_A(N)
+    j_array = jnp.array(A)
+    A_sp_matrix = sparse.BCOO.fromdense(j_array)
+    return A_sp_matrix
 </code></pre>
 </div>
 </div>
 <p>In this function, we are still using the get_A to generate our inital matrix. However, the JAX library is only able to read in jnp array’s and not np array’s. Therefore, we will need to convert the array into jnp format. The sparse.BCOO.fromdense function is a batched coordinate sparse array, which offers a compressed storage format. This will allow our code to run a lot faster and be more efficient. In addition, we want to make sure we use the jited version of advance_time_matvecmul as this allows jax to perform an optimized calculation.</p>
-<div id="b61663fb" class="cell" data-execution_count="37">
+<div id="b61663fb" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">101</span> <span class="co"># dimension</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.2</span> </span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> np.zeros((N, N)) <span class="co"># reseting u</span></span>
@@ -330,11 +329,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>execution_time <span class="op">=</span> stop <span class="op">-</span> start <span class="co"># calculating the duration</span></span>
 <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Time elapsed:"</span>, execution_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time elapsed: 0.8979862499982119</code></pre>
+<pre><code>Time elapsed: 0.9678866250033025</code></pre>
 </div>
 </div>
 <p>We can see that using the sparse matrix in JAX, the heat diffusion simulation was a lot faster than our previous method. It was about 10x faster. Let’s take a look at the plots and see if we got the same result.</p>
-<div id="f51d5070" class="cell" data-execution_count="29">
+<div id="f51d5070" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(plots)) :</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">3</span>, <span class="dv">3</span>, i<span class="op">+</span><span class="dv">1</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    plt.imshow(plots[i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -350,63 +349,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="direct-operation-with-numpy" class="level1">
 <h1>Direct Operation with Numpy</h1>
 <p>In this example, we will be using numpy to advance the solution by one timestep. We will be using vectorized array operation, like np.roll().</p>
-<div id="7a2804a6" class="cell" data-execution_count="30">
+<div id="7a2804a6" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> heat_equation <span class="im">import</span> advance_time_numpy</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(inspect.getsource(advance_time_numpy))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>def get_sparse_A(N) :
-    """
-    Takes in the dimensions, N
-    Utilizies previously defined function and changing it to a jnp array
-    Puts the array into a sparse array
-    """
-    A = get_A(N)
-    j_array = jnp.array(A)
-    A_sp_matrix = sparse.BCOO.fromdense(j_array)
-    return A_sp_matrix
-</code></pre>
-</div>
-</div>
-<p>We will now use our new function for the simulation.</p>
-<div id="090d3d47" class="cell" data-execution_count="38">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.2</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>plots <span class="op">=</span> []</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> np.zeros((N, N))</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>u[<span class="bu">int</span>(N<span class="op">/</span><span class="dv">2</span>), <span class="bu">int</span>(N<span class="op">/</span><span class="dv">2</span>)] <span class="op">=</span> <span class="fl">1.0</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> timeit.default_timer() </span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">2701</span>) :</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> advance_time_numpy(u, epsilon) </span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">%</span> <span class="dv">300</span> <span class="op">==</span> <span class="dv">0</span> :</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        plots.append(u)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>stop <span class="op">=</span> timeit.default_timer()</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>execution_time <span class="op">=</span> stop <span class="op">-</span> start</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Time elapsed:"</span>, execution_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Time elapsed: 0.2789691670332104</code></pre>
-</div>
-</div>
-<p>Wow! We can see that numpy runs abour 100x times faster than our first method! Let’s view our plots for the simulation.</p>
-<div id="8aea82f1" class="cell" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(plots)) :</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">3</span>, <span class="dv">3</span>, i<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    plt.imshow(plots[i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="HW4_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="with-jax" class="level1">
-<h1>With JAX</h1>
-<p>Similarly to the numpy function above, we will instead be using jnp instead of np.</p>
-<div id="2352e00f" class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> heat_equation <span class="im">import</span> advance_time_jax</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(inspect.getsource(advance_time_jax))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>def advance_time_numpy(u, epsilon) :
     """
@@ -426,8 +371,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </code></pre>
 </div>
 </div>
+<p>We will now use our new function for the simulation.</p>
+<div id="090d3d47" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.2</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>plots <span class="op">=</span> []</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> np.zeros((N, N))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>u[<span class="bu">int</span>(N<span class="op">/</span><span class="dv">2</span>), <span class="bu">int</span>(N<span class="op">/</span><span class="dv">2</span>)] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> timeit.default_timer() </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">2701</span>) :</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> advance_time_numpy(u, epsilon) </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">%</span> <span class="dv">300</span> <span class="op">==</span> <span class="dv">0</span> :</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        plots.append(u)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>stop <span class="op">=</span> timeit.default_timer()</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>execution_time <span class="op">=</span> stop <span class="op">-</span> start</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Time elapsed:"</span>, execution_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time elapsed: 0.2493002920091385</code></pre>
+</div>
+</div>
+<p>Wow! We can see that numpy runs abour 100x times faster than our first method! Let’s view our plots for the simulation.</p>
+<div id="8aea82f1" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(plots)) :</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">3</span>, <span class="dv">3</span>, i<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    plt.imshow(plots[i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW4_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="with-jax" class="level1">
+<h1>With JAX</h1>
+<p>Similarly to the numpy function above, we will instead be using jnp instead of np.</p>
+<div id="2352e00f" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> heat_equation <span class="im">import</span> advance_time_jax</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(inspect.getsource(advance_time_jax))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>def advance_time_jax(u, epsilon) : 
+    """
+    Takes in u, which is the NxN grid state, and episilon
+    Using the heat diffusion equation
+    Uses jnp.roll to generate the boundary condition
+    Returns the new grid state after advancing by one timestep
+    """
+    padded = jnp.pad(u, 1, mode = 'constant') # modifies array by padding edges
+    jnp_u = padded + epsilon * (jnp.roll(padded, 1, axis = 1) + 
+                                jnp.roll(padded, -1, axis = 1) + 
+                                jnp.roll(padded, -1, axis = 0) + 
+                                jnp.roll(padded, 1, axis = 0) - 
+                                (4 * padded))
+    jnp_u_slc = jnp_u[1:-1, 1:-1]
+    return jnp_u_slc
+</code></pre>
+</div>
+</div>
 <p>You can observe from about that in every instance that we used np, we switched it into jnp as jax only runs with jnp arrays. Now, let’s fun our function!</p>
-<div id="944a28b3" class="cell" data-execution_count="39">
+<div id="944a28b3" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.2</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>plots <span class="op">=</span> []</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -444,7 +448,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>execution_time <span class="op">=</span> stop <span class="op">-</span> start</span>
 <span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Time elapsed:"</span>, execution_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time elapsed: 0.09186283400049433</code></pre>
+<pre><code>Time elapsed: 0.11503070800972637</code></pre>
+</div>
+</div>
+<div id="ad94a791" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(plots)) :</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">3</span>, <span class="dv">3</span>, i<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    plt.imshow(plots[i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW4_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>We have to remember to jit our function as well similar to what we did in part 2. Looking at our execution time, we can see that the JAX method performed the fastest out of all the methods!</p>
