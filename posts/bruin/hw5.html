@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Shaina Wang">
+<meta name="dcterms.date" content="2024-03-04">
 
-<title>myblog</title>
+<title>myblog - Image Classification</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,7 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -100,6 +102,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -144,7 +150,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Image Classification</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Week 9</div>
+                <div class="quarto-category">HW5</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Shaina Wang </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 4, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
@@ -154,18 +192,762 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div id="41f003bb" class="cell" data-execution_count="1">
+
+<p>In this blog post, you will be learning how to create different image classification modles in Keras to classify cats and dogs.</p>
+<p>To do so, let us first import the important libraries to build our models!</p>
+<div id="cell-3" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras <span class="im">import</span> utils</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow_datasets <span class="im">as</span> tfds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>ModuleNotFoundError: No module named 'keras'</code></pre>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> keras</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras <span class="im">import</span> utils</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow_datasets <span class="im">as</span> tfds</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After importing all libarires, we will be using the tensorflow_datasets to retrieve the dataset on cats vs dogs for this example. Many code in the blog was inspired by the following website. If you would like to learn more, please reference the following link: https://www.tensorflow.org/tutorials/images/transfer_learning.</p>
+<p>We will be spliting the data by 40% for training, 10% for validation, and 10% for the test. The rest of the dataset will not be used.</p>
+<div id="cell-5" class="cell" data-outputid="5a876d5f-0b11-438d-f587-0ff5eb055c9a" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>train_ds, validation_ds, test_ds <span class="op">=</span> tfds.load(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"cats_vs_dogs"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 40% for training, 10% for validation, and 10% for test (the rest unused)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    split<span class="op">=</span>[<span class="st">"train[:40%]"</span>, <span class="st">"train[40%:50%]"</span>, <span class="st">"train[50%:60%]"</span>],</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    as_supervised<span class="op">=</span><span class="va">True</span>,  <span class="co"># Include labels</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of training samples: </span><span class="sc">{</span>train_ds<span class="sc">.</span>cardinality()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of validation samples: </span><span class="sc">{</span>validation_ds<span class="sc">.</span>cardinality()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of test samples: </span><span class="sc">{</span>test_ds<span class="sc">.</span>cardinality()<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Downloading and preparing dataset 786.67 MiB (download: 786.67 MiB, generated: 1.04 GiB, total: 1.81 GiB) to /root/tensorflow_datasets/cats_vs_dogs/4.0.1...
+Dataset cats_vs_dogs downloaded and prepared to /root/tensorflow_datasets/cats_vs_dogs/4.0.1. Subsequent calls will reuse this data.
+Number of training samples: 9305
+Number of validation samples: 2326
+Number of test samples: 2326</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"87940ff3970b46788e37dbd032c921e0","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"ad959da75d6c47b6b963700713ad792a","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"f9285bcf59a9491e898b8f4bbe4f9f0e","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"9c50f36222c44efe8314b076d8e08ec8","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>WARNING:absl:1738 images were corrupted and were skipped</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"7b0e06868ef74f42b5e76457dc0af753","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
 </div>
 </div>
+<p>In the following code chunk, we will be resizing the images. This is to allow for a constant size between all images, as some images have different sizes.</p>
+<div id="cell-7" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>resize_fn <span class="op">=</span> keras.layers.Resizing(<span class="dv">150</span>, <span class="dv">150</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>train_ds <span class="op">=</span> train_ds.<span class="bu">map</span>(<span class="kw">lambda</span> x, y: (resize_fn(x), y))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>validation_ds <span class="op">=</span> validation_ds.<span class="bu">map</span>(<span class="kw">lambda</span> x, y: (resize_fn(x), y))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>test_ds <span class="op">=</span> test_ds.<span class="bu">map</span>(<span class="kw">lambda</span> x, y: (resize_fn(x), y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since we are working with very big datasets, we will be using the following code chunk to speed up the time for reading the data.</p>
+<div id="cell-9" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> data <span class="im">as</span> tf_data</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">64</span> <span class="co"># amount of data points pulled from directory</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>train_ds <span class="op">=</span> train_ds.batch(batch_size).prefetch(tf_data.AUTOTUNE).cache()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>validation_ds <span class="op">=</span> validation_ds.batch(batch_size).prefetch(tf_data.AUTOTUNE).cache()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>test_ds <span class="op">=</span> test_ds.batch(batch_size).prefetch(tf_data.AUTOTUNE).cache()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s experiment with how we can work with the data. Specifically, how can we see what images we are using. Let us define a function that will create two-row visualization. The first row will consist of three random pictures of cats from our dataset. The second row will consist of three random random pictures of dogs!</p>
+<div id="cell-11" class="cell" data-execution_count="60">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> visualize(dataset, n) :</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>)) <span class="co"># setting the plot grids</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i, (images, labels) <span class="kw">in</span> <span class="bu">enumerate</span>(dataset.take(n)):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      ncats <span class="op">=</span> <span class="dv">0</span> <span class="co"># current number of cats on plot</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      ndogs <span class="op">=</span> <span class="dv">0</span> <span class="co"># current number of dogs on plot</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> image, label <span class="kw">in</span> <span class="bu">zip</span>(images, labels):</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> label <span class="op">==</span> <span class="dv">0</span> <span class="kw">and</span> ncats <span class="op">&lt;</span> <span class="dv">3</span>:</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>              axes[<span class="dv">0</span>, ncats].imshow(image.numpy().astype(<span class="st">"uint8"</span>)) <span class="co"># adding cat</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>              axes[<span class="dv">0</span>, ncats].set_title(<span class="st">'Cat'</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>              axes[<span class="dv">0</span>, ncats].axis(<span class="st">"off"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>              ncats <span class="op">=</span> ncats <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>          <span class="cf">elif</span> label <span class="op">==</span> <span class="dv">1</span> <span class="kw">and</span> ndogs <span class="op">&lt;</span> <span class="dv">3</span>:</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>              axes[<span class="dv">1</span>, ndogs].imshow(image.numpy().astype(<span class="st">"uint8"</span>)) <span class="co"># adding dog</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>              axes[<span class="dv">1</span>, ndogs].set_title(<span class="st">'Dog'</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>              axes[<span class="dv">1</span>, ndogs].axis(<span class="st">"off"</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>              ndogs <span class="op">=</span> ndogs <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-12" class="cell" data-outputid="df6e2140-249c-40eb-a18b-cc9b932e3f77" data-execution_count="62">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>visualize(train_ds, random.randint(<span class="dv">1</span>,<span class="dv">64</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW5_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="check-label-frequencies" class="level1">
+<h1>Check Label Frequencies</h1>
+<div id="cell-14" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>labels_iterator<span class="op">=</span> train_ds.unbatch().<span class="bu">map</span>(<span class="kw">lambda</span> image, label: label).as_numpy_iterator()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s look at the number of dogs and cats in our dataset. The label 0 corresponds to a cat, while label 1 corresponds to a dog. By figuring out the number of cats and dogs, we can have a general idea of our baseline machine learning model.</p>
+<div id="cell-16" class="cell" data-outputid="ecad2426-106e-4be2-c214-8090cdea5ce2" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cat_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dog_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label <span class="kw">in</span> labels_iterator:</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> label <span class="op">==</span> <span class="dv">0</span>:  <span class="co"># Cat label</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        cat_count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> label <span class="op">==</span> <span class="dv">1</span>:  <span class="co"># Dog label</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        dog_count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of Cat Images:"</span>, cat_count)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of Dog Images:"</span>, dog_count)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of Cat Images: 4637
+Number of Dog Images: 4668</code></pre>
+</div>
+</div>
+<p>Looking at the results, we see that there seems to be a 50% accuracy Since the amount of dogs is 50.17% and the amount of cats is 49.83%. Therefore, we should aim for the following models we create to get an accuracy over 50%.</p>
+</section>
+<section id="first-model-keras-squential" class="level1">
+<h1>First Model: Keras Squential</h1>
+<p>Let’s create out first model using keras.Squential. We will be using 3 Conv2D layers, 2 MaxPooling2D layers, 1 Flatten layer, 2 Dense layers, and 1 Dropout layer.</p>
+<div id="cell-20" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras <span class="im">import</span> datasets, layers, models</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>model1 <span class="op">=</span> models.Sequential([</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    layers.Input((<span class="dv">150</span>, <span class="dv">150</span>, <span class="dv">3</span>)),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    layers.MaxPooling2D((<span class="dv">2</span>, <span class="dv">2</span>)),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    layers.MaxPooling2D((<span class="dv">2</span>, <span class="dv">2</span>)),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    layers.Flatten(),</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">10</span>),</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    layers.Dropout(<span class="fl">0.5</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We have completed our first model! Let’s take a look at our summary.</p>
+<div id="cell-22" class="cell" data-outputid="d3a9bff7-e6fb-4d0e-f7db-572069a294b8" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model1.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d (Conv2D)             (None, 148, 148, 32)      896       
+                                                                 
+ max_pooling2d (MaxPooling2  (None, 74, 74, 32)        0         
+ D)                                                              
+                                                                 
+ conv2d_1 (Conv2D)           (None, 72, 72, 32)        9248      
+                                                                 
+ max_pooling2d_1 (MaxPoolin  (None, 36, 36, 32)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_2 (Conv2D)           (None, 34, 34, 64)        18496     
+                                                                 
+ flatten (Flatten)           (None, 73984)             0         
+                                                                 
+ dense (Dense)               (None, 64)                4735040   
+                                                                 
+ dense_1 (Dense)             (None, 10)                650       
+                                                                 
+ dropout (Dropout)           (None, 10)                0         
+                                                                 
+=================================================================
+Total params: 4764330 (18.17 MB)
+Trainable params: 4764330 (18.17 MB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________</code></pre>
+</div>
+</div>
+<div id="cell-23" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model1.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>              loss<span class="op">=</span>keras.losses.SparseCategoricalCrossentropy(from_logits<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-24" class="cell" data-outputid="d2e40ab3-c3f6-43d8-fe7b-525c09400cd2" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model1.fit(train_ds,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                    epochs<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                    validation_data<span class="op">=</span>validation_ds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/20
+146/146 [==============================] - 18s 76ms/step - loss: 10.0993 - accuracy: 0.4985 - val_loss: 0.7846 - val_accuracy: 0.5439
+Epoch 2/20
+146/146 [==============================] - 4s 30ms/step - loss: 1.5079 - accuracy: 0.5286 - val_loss: 0.7713 - val_accuracy: 0.5503
+Epoch 3/20
+146/146 [==============================] - 4s 31ms/step - loss: 1.4099 - accuracy: 0.5529 - val_loss: 0.7178 - val_accuracy: 0.5735
+Epoch 4/20
+146/146 [==============================] - 4s 30ms/step - loss: 1.3716 - accuracy: 0.5819 - val_loss: 0.7416 - val_accuracy: 0.6036
+Epoch 5/20
+146/146 [==============================] - 4s 30ms/step - loss: 1.3399 - accuracy: 0.5976 - val_loss: 0.7756 - val_accuracy: 0.5907
+Epoch 6/20
+146/146 [==============================] - 4s 31ms/step - loss: 1.2628 - accuracy: 0.6230 - val_loss: 0.7592 - val_accuracy: 0.6002
+Epoch 7/20
+146/146 [==============================] - 4s 30ms/step - loss: 1.2388 - accuracy: 0.6420 - val_loss: 0.8455 - val_accuracy: 0.6019
+Epoch 8/20
+146/146 [==============================] - 5s 32ms/step - loss: 1.2038 - accuracy: 0.6757 - val_loss: 0.8829 - val_accuracy: 0.5963
+Epoch 9/20
+146/146 [==============================] - 5s 35ms/step - loss: 1.1606 - accuracy: 0.6974 - val_loss: 1.0189 - val_accuracy: 0.5903
+Epoch 10/20
+146/146 [==============================] - 4s 31ms/step - loss: 1.1109 - accuracy: 0.7248 - val_loss: 1.1004 - val_accuracy: 0.5985
+Epoch 11/20
+146/146 [==============================] - 5s 31ms/step - loss: 1.0465 - accuracy: 0.7534 - val_loss: 0.9725 - val_accuracy: 0.6040
+Epoch 12/20
+146/146 [==============================] - 5s 32ms/step - loss: 0.9972 - accuracy: 0.7804 - val_loss: 1.2329 - val_accuracy: 0.6032
+Epoch 13/20
+146/146 [==============================] - 4s 31ms/step - loss: 0.9634 - accuracy: 0.7977 - val_loss: 1.5375 - val_accuracy: 0.6118
+Epoch 14/20
+146/146 [==============================] - 5s 32ms/step - loss: 0.9624 - accuracy: 0.8061 - val_loss: 1.2666 - val_accuracy: 0.6058
+Epoch 15/20
+146/146 [==============================] - 4s 30ms/step - loss: 0.9328 - accuracy: 0.8198 - val_loss: 1.4733 - val_accuracy: 0.6019
+Epoch 16/20
+146/146 [==============================] - 4s 31ms/step - loss: 0.9227 - accuracy: 0.8336 - val_loss: 1.7254 - val_accuracy: 0.5881
+Epoch 17/20
+146/146 [==============================] - 5s 33ms/step - loss: 0.9388 - accuracy: 0.8327 - val_loss: 1.6125 - val_accuracy: 0.5967
+Epoch 18/20
+146/146 [==============================] - 5s 31ms/step - loss: 0.9524 - accuracy: 0.8242 - val_loss: 2.0876 - val_accuracy: 0.6019
+Epoch 19/20
+146/146 [==============================] - 4s 30ms/step - loss: 0.9184 - accuracy: 0.8343 - val_loss: 1.9462 - val_accuracy: 0.6049
+Epoch 20/20
+146/146 [==============================] - 5s 33ms/step - loss: 0.9066 - accuracy: 0.8461 - val_loss: 1.9144 - val_accuracy: 0.6071</code></pre>
+</div>
+</div>
+<div id="cell-25" class="cell" data-outputid="8986dbf3-447d-4e0d-e2f7-32ebd89005e3" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"accuracy"</span>], label <span class="op">=</span> <span class="st">"training"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"val_accuracy"</span>], label <span class="op">=</span> <span class="st">"validation"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"epoch"</span>, ylabel <span class="op">=</span> <span class="st">"accuracy"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW5_files/figure-html/cell-14-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Accuracy of the model was between 62% to 68%, which is a lot better than the baseline of approximately 50%.</strong> Therefore, we performed about 12-18% better than our baseline which is a big improvement! However, look carefully at our plot. We can observe a little bit of overfitting since our training accuracy is much higher than the validation accuracy. Let’s try a different method and see if we can get a higher accuracy and prevent overfitting from occuring.</p>
+</section>
+<section id="model-with-data-augmentation" class="level1">
+<h1>Model with Data Augmentation</h1>
+<p>In this model, we will be generating modifications of the same image for the training dataset. For example, let’s say we have an image of a dog. Even if the dog is flipped upside down or rotated 30 degrees, the image still represents a dog regardless. Therefore, let’s train the model to be able to tell these difference apart.</p>
+<p>Let’s just take a random image in our dataset and make some changes to it!</p>
+<div id="cell-30" class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> images, labels <span class="kw">in</span> train_ds.take(<span class="dv">9</span>):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> images[<span class="dv">0</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> labels[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we will need to perform data augmentation. We want to flip our image horizontally and vertically and also give it a little rotation.</p>
+<p>Remember to also add the image to a batch, or else it will only show up as pixel when trying to plot the original and new copies of the image!</p>
+<p>Let’s also create a plot to see what the image originally looks like and what it looks like after applying the RandomFlip and RandomRotation.</p>
+<div id="cell-32" class="cell" data-outputid="8e209465-7ebc-45aa-ddd1-5a6988614501" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data_augmentation <span class="op">=</span> tf.keras.Sequential([</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  layers.RandomFlip(<span class="st">"horizontal_and_vertical"</span>),</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  layers.RandomRotation(<span class="fl">0.2</span>),</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the image to a batch.</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> tf.cast(tf.expand_dims(image, <span class="dv">0</span>), tf.float32)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  augmented_image <span class="op">=</span> data_augmentation(image)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  ax <span class="op">=</span> plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, i <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  plt.imshow(augmented_image[<span class="dv">0</span>].numpy().astype(<span class="st">"uint8"</span>))</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW5_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, we are able to apply what we used above and implement it into our new model. We will be adding RandomFlip and RandomRotation into our model and adding as the first two layers.</p>
+<div id="cell-34" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="op">=</span> models.Sequential([</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    layers.RandomFlip(<span class="st">"horizontal_and_vertical"</span>, input_shape<span class="op">=</span>(<span class="dv">150</span>, <span class="dv">150</span>, <span class="dv">3</span>)),  <span class="co"># Horizontal flip augmentation</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    layers.RandomRotation(<span class="fl">0.2</span>),  <span class="co"># Random rotation augmentation</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    layers.MaxPooling2D((<span class="dv">2</span>, <span class="dv">2</span>)),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    layers.MaxPooling2D((<span class="dv">2</span>, <span class="dv">2</span>)),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    layers.Flatten(),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">10</span>), <span class="co"># number of classes</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    layers.Dropout(<span class="fl">0.5</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s generate a summary of our model.</p>
+<div id="cell-36" class="cell" data-outputid="4de81480-a022-4ccf-d456-c61ea074debe" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>model2.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential_2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ random_flip_1 (RandomFlip)  (None, 150, 150, 3)       0         
+                                                                 
+ random_rotation_1 (RandomR  (None, 150, 150, 3)       0         
+ otation)                                                        
+                                                                 
+ conv2d_3 (Conv2D)           (None, 148, 148, 32)      896       
+                                                                 
+ max_pooling2d_2 (MaxPoolin  (None, 74, 74, 32)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_4 (Conv2D)           (None, 72, 72, 32)        9248      
+                                                                 
+ max_pooling2d_3 (MaxPoolin  (None, 36, 36, 32)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_5 (Conv2D)           (None, 34, 34, 64)        18496     
+                                                                 
+ flatten_1 (Flatten)         (None, 73984)             0         
+                                                                 
+ dense_2 (Dense)             (None, 64)                4735040   
+                                                                 
+ dense_3 (Dense)             (None, 10)                650       
+                                                                 
+ dropout_1 (Dropout)         (None, 10)                0         
+                                                                 
+=================================================================
+Total params: 4764330 (18.17 MB)
+Trainable params: 4764330 (18.17 MB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________</code></pre>
+</div>
+</div>
+<div id="cell-37" class="cell" data-outputid="56c817d3-82f1-43d0-8efd-7b998ee817f0" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model2.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>              loss<span class="op">=</span>keras.losses.SparseCategoricalCrossentropy(from_logits<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model2.fit(train_ds,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>                     epochs<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>                     validation_data<span class="op">=</span>validation_ds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/20
+146/146 [==============================] - 7s 34ms/step - loss: 12.1464 - accuracy: 0.4969 - val_loss: 0.8019 - val_accuracy: 0.5443
+Epoch 2/20
+146/146 [==============================] - 5s 33ms/step - loss: 1.4643 - accuracy: 0.5098 - val_loss: 0.6919 - val_accuracy: 0.5709
+Epoch 3/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.4397 - accuracy: 0.5247 - val_loss: 0.6805 - val_accuracy: 0.6036
+Epoch 4/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.4364 - accuracy: 0.5316 - val_loss: 0.6555 - val_accuracy: 0.6002
+Epoch 5/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.4366 - accuracy: 0.5313 - val_loss: 0.6561 - val_accuracy: 0.6053
+Epoch 6/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.4059 - accuracy: 0.5354 - val_loss: 0.7199 - val_accuracy: 0.6277
+Epoch 7/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.4066 - accuracy: 0.5372 - val_loss: 0.6568 - val_accuracy: 0.6354
+Epoch 8/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.3810 - accuracy: 0.5487 - val_loss: 0.6857 - val_accuracy: 0.6036
+Epoch 9/20
+146/146 [==============================] - 5s 37ms/step - loss: 1.3915 - accuracy: 0.5427 - val_loss: 0.8426 - val_accuracy: 0.6393
+Epoch 10/20
+146/146 [==============================] - 5s 36ms/step - loss: 1.3769 - accuracy: 0.5506 - val_loss: 0.6383 - val_accuracy: 0.6681
+Epoch 11/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.3395 - accuracy: 0.5731 - val_loss: 0.5919 - val_accuracy: 0.6874
+Epoch 12/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.3689 - accuracy: 0.5578 - val_loss: 0.6142 - val_accuracy: 0.6866
+Epoch 13/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.3660 - accuracy: 0.5553 - val_loss: 0.5927 - val_accuracy: 0.6935
+Epoch 14/20
+146/146 [==============================] - 5s 32ms/step - loss: 1.3493 - accuracy: 0.5614 - val_loss: 0.5995 - val_accuracy: 0.6956
+Epoch 15/20
+146/146 [==============================] - 5s 36ms/step - loss: 1.3458 - accuracy: 0.5593 - val_loss: 0.6138 - val_accuracy: 0.6810
+Epoch 16/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.3444 - accuracy: 0.5659 - val_loss: 0.5815 - val_accuracy: 0.7046
+Epoch 17/20
+146/146 [==============================] - 5s 34ms/step - loss: 1.3576 - accuracy: 0.5589 - val_loss: 0.6274 - val_accuracy: 0.6625
+Epoch 18/20
+146/146 [==============================] - 5s 33ms/step - loss: 1.3629 - accuracy: 0.5569 - val_loss: 0.6786 - val_accuracy: 0.6917
+Epoch 19/20
+146/146 [==============================] - 5s 33ms/step - loss: 1.3398 - accuracy: 0.5621 - val_loss: 0.6311 - val_accuracy: 0.6913
+Epoch 20/20
+146/146 [==============================] - 5s 33ms/step - loss: 1.3387 - accuracy: 0.5660 - val_loss: 0.5870 - val_accuracy: 0.7029</code></pre>
+</div>
+</div>
+<div id="cell-38" class="cell" data-outputid="280cc156-7201-4386-a7dd-25005a5bcf94" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"accuracy"</span>], label <span class="op">=</span> <span class="st">"training"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"val_accuracy"</span>], label <span class="op">=</span> <span class="st">"validation"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"epoch"</span>, ylabel <span class="op">=</span> <span class="st">"accuracy"</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW5_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Looking at our plot, we see that the accuracy has increased by a lot. <strong>The accuracy of model 2 ranged from 54% to 71%.</strong> This was not a huge improvement compared to model 1. The highest accuracy was around 68%. However, there does not appear to have any overfitting in our model 2, which is really good.</p>
+</section>
+<section id="model-3-data-preprocessing" class="level1">
+<h1>Model 3: Data Preprocessing</h1>
+<p>In this model, we will be edditing the RGB pixel values to be normalized between 0 and 1, or between -1 and 1. This will allow the model to be a lot faster since RGB pixel values range from 0 to 255. This will give the model a smaller range to work with.</p>
+<div id="cell-42" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>i <span class="op">=</span> keras.Input(shape<span class="op">=</span>(<span class="dv">150</span>, <span class="dv">150</span>, <span class="dv">3</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The pixel values have the range of (0, 255), but many models will work better if rescaled to (-1, 1.)</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># outputs: `(inputs * scale) + offset`</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>scale_layer <span class="op">=</span> keras.layers.Rescaling(scale<span class="op">=</span><span class="dv">1</span> <span class="op">/</span> <span class="fl">127.5</span>, offset<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> scale_layer(i)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>preprocessor <span class="op">=</span> keras.Model(inputs <span class="op">=</span> i, outputs <span class="op">=</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we have finished preprocesing our data. Let’s add it into our model. We should be putting preprocessor into the first layer of our model.</p>
+<div id="cell-44" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>model3 <span class="op">=</span> models.Sequential([</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    preprocessor,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    layers.Input((<span class="dv">150</span>, <span class="dv">150</span>, <span class="dv">3</span>)),</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    layers.MaxPooling2D((<span class="dv">2</span>, <span class="dv">2</span>)),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    layers.MaxPooling2D((<span class="dv">2</span>, <span class="dv">2</span>)),</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>, <span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    layers.Flatten(),</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">10</span>), <span class="co"># number of classes</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    layers.Dropout(<span class="fl">0.5</span>)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s generate the summary!</p>
+<div id="cell-46" class="cell" data-outputid="e825a787-2f8b-4d3a-9d9c-750dbcc80643" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>model3.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential_3"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ model (Functional)          (None, 150, 150, 3)       0         
+                                                                 
+ input_3 (InputLayer)        multiple                  0         
+                                                                 
+ conv2d_6 (Conv2D)           (None, 148, 148, 32)      896       
+                                                                 
+ max_pooling2d_4 (MaxPoolin  (None, 74, 74, 32)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_7 (Conv2D)           (None, 72, 72, 32)        9248      
+                                                                 
+ max_pooling2d_5 (MaxPoolin  (None, 36, 36, 32)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_8 (Conv2D)           (None, 34, 34, 64)        18496     
+                                                                 
+ flatten_2 (Flatten)         (None, 73984)             0         
+                                                                 
+ dense_4 (Dense)             (None, 64)                4735040   
+                                                                 
+ dense_5 (Dense)             (None, 10)                650       
+                                                                 
+ dropout_2 (Dropout)         (None, 10)                0         
+                                                                 
+=================================================================
+Total params: 4764330 (18.17 MB)
+Trainable params: 4764330 (18.17 MB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________</code></pre>
+</div>
+</div>
+<div id="cell-47" class="cell" data-outputid="79fba225-6347-400a-cb41-3bc09d95b401" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model3.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>              loss<span class="op">=</span>keras.losses.SparseCategoricalCrossentropy(from_logits<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model3.fit(train_ds,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                     epochs<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                     validation_data<span class="op">=</span>validation_ds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/20
+146/146 [==============================] - 6s 32ms/step - loss: 1.4496 - accuracy: 0.5377 - val_loss: 0.6175 - val_accuracy: 0.6999
+Epoch 2/20
+146/146 [==============================] - 5s 33ms/step - loss: 1.2940 - accuracy: 0.5882 - val_loss: 0.5640 - val_accuracy: 0.7451
+Epoch 3/20
+146/146 [==============================] - 5s 31ms/step - loss: 1.2526 - accuracy: 0.6255 - val_loss: 0.5385 - val_accuracy: 0.7472
+Epoch 4/20
+146/146 [==============================] - 5s 32ms/step - loss: 1.1996 - accuracy: 0.6505 - val_loss: 0.5156 - val_accuracy: 0.7601
+Epoch 5/20
+146/146 [==============================] - 5s 31ms/step - loss: 1.1571 - accuracy: 0.6930 - val_loss: 0.5575 - val_accuracy: 0.7506
+Epoch 6/20
+146/146 [==============================] - 4s 31ms/step - loss: 1.0870 - accuracy: 0.7241 - val_loss: 0.5551 - val_accuracy: 0.7618
+Epoch 7/20
+146/146 [==============================] - 4s 31ms/step - loss: 1.0454 - accuracy: 0.7580 - val_loss: 0.5696 - val_accuracy: 0.7713
+Epoch 8/20
+146/146 [==============================] - 5s 31ms/step - loss: 1.0009 - accuracy: 0.7828 - val_loss: 0.6470 - val_accuracy: 0.7575
+Epoch 9/20
+146/146 [==============================] - 4s 31ms/step - loss: 0.9589 - accuracy: 0.8069 - val_loss: 0.7709 - val_accuracy: 0.7403
+Epoch 10/20
+146/146 [==============================] - 5s 34ms/step - loss: 0.9621 - accuracy: 0.8109 - val_loss: 1.0288 - val_accuracy: 0.6995
+Epoch 11/20
+146/146 [==============================] - 5s 31ms/step - loss: 0.9546 - accuracy: 0.8164 - val_loss: 0.8173 - val_accuracy: 0.7373
+Epoch 12/20
+146/146 [==============================] - 5s 31ms/step - loss: 0.9024 - accuracy: 0.8371 - val_loss: 0.9725 - val_accuracy: 0.7463
+Epoch 13/20
+146/146 [==============================] - 5s 31ms/step - loss: 0.8862 - accuracy: 0.8461 - val_loss: 0.9460 - val_accuracy: 0.7597
+Epoch 14/20
+146/146 [==============================] - 5s 31ms/step - loss: 0.8622 - accuracy: 0.8625 - val_loss: 1.1083 - val_accuracy: 0.7382
+Epoch 15/20
+146/146 [==============================] - 5s 32ms/step - loss: 0.8520 - accuracy: 0.8670 - val_loss: 1.2237 - val_accuracy: 0.7472
+Epoch 16/20
+146/146 [==============================] - 5s 31ms/step - loss: 0.8446 - accuracy: 0.8594 - val_loss: 1.3035 - val_accuracy: 0.7429
+Epoch 17/20
+146/146 [==============================] - 5s 31ms/step - loss: 0.8631 - accuracy: 0.8616 - val_loss: 1.2253 - val_accuracy: 0.7420
+Epoch 18/20
+146/146 [==============================] - 5s 32ms/step - loss: 0.8624 - accuracy: 0.8629 - val_loss: 1.4143 - val_accuracy: 0.7360
+Epoch 19/20
+146/146 [==============================] - 5s 31ms/step - loss: 0.8482 - accuracy: 0.8630 - val_loss: 1.3342 - val_accuracy: 0.7476
+Epoch 20/20
+146/146 [==============================] - 5s 34ms/step - loss: 0.8700 - accuracy: 0.8586 - val_loss: 1.4104 - val_accuracy: 0.7438</code></pre>
+</div>
+</div>
+<div id="cell-48" class="cell" data-outputid="44cc65a7-1cc3-4ac3-97a5-11b1afb36feb">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"accuracy"</span>], label <span class="op">=</span> <span class="st">"training"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"val_accuracy"</span>], label <span class="op">=</span> <span class="st">"validation"</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"epoch"</span>, ylabel <span class="op">=</span> <span class="st">"accuracy"</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW5_files/figure-html/cell-25-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>We see that the validation accuracty now ranges from 70% to 77%.</strong> This is now a big improvement from model 1, where the highest accuracy was 68%. However, there might be some overfitting in model 3. Toward the middle of the epoch, we see that training began to surpass our validation accuracy. Let’s try our final model to see if we can get rid of this issue.</p>
+</section>
+<section id="model-4-transfer-learning" class="level1">
+<h1>Model 4: Transfer Learning</h1>
+<p>In this model, let’s try to use a pre-existing model that was already build to add onto it. We can do so by downloading MobileNetV3Large as shown below.</p>
+<div id="cell-52" class="cell" data-outputid="1854cc12-0045-47cc-a481-d5bbd25d9d36" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>IMG_SHAPE <span class="op">=</span> (<span class="dv">150</span>, <span class="dv">150</span>, <span class="dv">3</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>base_model <span class="op">=</span> keras.applications.MobileNetV3Large(input_shape<span class="op">=</span>IMG_SHAPE,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                                               include_top<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                                               weights<span class="op">=</span><span class="st">'imagenet'</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>base_model.trainable <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>i <span class="op">=</span> keras.Input(shape<span class="op">=</span>IMG_SHAPE)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> base_model(i, training <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>base_model_layer <span class="op">=</span> keras.Model(inputs <span class="op">=</span> i, outputs <span class="op">=</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>WARNING:tensorflow:`input_shape` is undefined or non-square, or `rows` is not 224. Weights for input shape (224, 224) will be loaded as the default.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Downloading data from https://storage.googleapis.com/tensorflow/keras-applications/mobilenet_v3/weights_mobilenet_v3_large_224_1.0_float_no_top_v2.h5
+12683000/12683000 [==============================] - 0s 0us/step</code></pre>
+</div>
+</div>
+<p>Let’s now add the base_model_layer as well as the data augmentation layers from model 2 to our newest model. Be sure to also change the Dense layer to 2.</p>
+<div id="cell-54" class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>model4 <span class="op">=</span> models.Sequential([</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    layers.RandomFlip(<span class="st">"horizontal_and_vertical"</span>, input_shape<span class="op">=</span>(<span class="dv">150</span>, <span class="dv">150</span>, <span class="dv">3</span>)),  <span class="co"># Horizontal flip augmentation</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    layers.RandomRotation(<span class="fl">0.2</span>),  <span class="co"># Random rotation augmentation,</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    base_model_layer,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    layers.GlobalAveragePooling2D(),</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">2</span>),</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    layers.Dropout(<span class="fl">0.5</span>)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s generate a summary of our model!</p>
+<div id="cell-56" class="cell" data-outputid="02d49736-b4db-4dde-ff22-6766fc8413b6" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>model4.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential_4"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ random_flip_3 (RandomFlip)  (None, 150, 150, 3)       0         
+                                                                 
+ random_rotation_3 (RandomR  (None, 150, 150, 3)       0         
+ otation)                                                        
+                                                                 
+ model_1 (Functional)        (None, 5, 5, 960)         2996352   
+                                                                 
+ global_average_pooling2d (  (None, 960)               0         
+ GlobalAveragePooling2D)                                         
+                                                                 
+ dense_6 (Dense)             (None, 2)                 1922      
+                                                                 
+ dropout_3 (Dropout)         (None, 2)                 0         
+                                                                 
+=================================================================
+Total params: 2998274 (11.44 MB)
+Trainable params: 1922 (7.51 KB)
+Non-trainable params: 2996352 (11.43 MB)
+_________________________________________________________________</code></pre>
+</div>
+</div>
+<div id="cell-57" class="cell" data-outputid="2aa0a3d8-6d04-4ef2-af23-234a67b17784" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>model4.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>              loss<span class="op">=</span>keras.losses.SparseCategoricalCrossentropy(from_logits<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model4.fit(train_ds,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>                     epochs<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>                     validation_data<span class="op">=</span>validation_ds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/20
+146/146 [==============================] - 15s 64ms/step - loss: 0.4866 - accuracy: 0.7474 - val_loss: 0.1211 - val_accuracy: 0.9553
+Epoch 2/20
+146/146 [==============================] - 7s 47ms/step - loss: 0.3619 - accuracy: 0.8032 - val_loss: 0.0931 - val_accuracy: 0.9660
+Epoch 3/20
+146/146 [==============================] - 7s 45ms/step - loss: 0.3336 - accuracy: 0.8087 - val_loss: 0.0892 - val_accuracy: 0.9686
+Epoch 4/20
+146/146 [==============================] - 7s 47ms/step - loss: 0.3308 - accuracy: 0.8081 - val_loss: 0.0923 - val_accuracy: 0.9678
+Epoch 5/20
+146/146 [==============================] - 7s 47ms/step - loss: 0.3202 - accuracy: 0.8161 - val_loss: 0.0855 - val_accuracy: 0.9686
+Epoch 6/20
+146/146 [==============================] - 7s 45ms/step - loss: 0.3132 - accuracy: 0.8175 - val_loss: 0.0812 - val_accuracy: 0.9708
+Epoch 7/20
+146/146 [==============================] - 7s 45ms/step - loss: 0.3103 - accuracy: 0.8210 - val_loss: 0.0845 - val_accuracy: 0.9678
+Epoch 8/20
+146/146 [==============================] - 7s 45ms/step - loss: 0.3032 - accuracy: 0.8248 - val_loss: 0.0838 - val_accuracy: 0.9682
+Epoch 9/20
+146/146 [==============================] - 6s 44ms/step - loss: 0.3104 - accuracy: 0.8247 - val_loss: 0.0895 - val_accuracy: 0.9682
+Epoch 10/20
+146/146 [==============================] - 7s 45ms/step - loss: 0.2862 - accuracy: 0.8326 - val_loss: 0.0926 - val_accuracy: 0.9613
+Epoch 11/20
+146/146 [==============================] - 7s 45ms/step - loss: 0.3007 - accuracy: 0.8339 - val_loss: 0.0911 - val_accuracy: 0.9639
+Epoch 12/20
+146/146 [==============================] - 7s 46ms/step - loss: 0.2996 - accuracy: 0.8269 - val_loss: 0.0899 - val_accuracy: 0.9660
+Epoch 13/20
+146/146 [==============================] - 7s 45ms/step - loss: 0.2959 - accuracy: 0.8221 - val_loss: 0.0775 - val_accuracy: 0.9721
+Epoch 14/20
+146/146 [==============================] - 7s 51ms/step - loss: 0.2946 - accuracy: 0.8259 - val_loss: 0.0782 - val_accuracy: 0.9708
+Epoch 15/20
+146/146 [==============================] - 6s 44ms/step - loss: 0.3086 - accuracy: 0.8297 - val_loss: 0.0854 - val_accuracy: 0.9660
+Epoch 16/20
+146/146 [==============================] - 6s 44ms/step - loss: 0.2955 - accuracy: 0.8292 - val_loss: 0.0872 - val_accuracy: 0.9643
+Epoch 17/20
+146/146 [==============================] - 6s 44ms/step - loss: 0.2878 - accuracy: 0.8308 - val_loss: 0.0767 - val_accuracy: 0.9738
+Epoch 18/20
+146/146 [==============================] - 7s 45ms/step - loss: 0.2840 - accuracy: 0.8293 - val_loss: 0.0796 - val_accuracy: 0.9682
+Epoch 19/20
+146/146 [==============================] - 7s 48ms/step - loss: 0.2900 - accuracy: 0.8319 - val_loss: 0.0781 - val_accuracy: 0.9699
+Epoch 20/20
+146/146 [==============================] - 6s 44ms/step - loss: 0.2926 - accuracy: 0.8321 - val_loss: 0.0862 - val_accuracy: 0.9673</code></pre>
+</div>
+</div>
+<div id="cell-58" class="cell" data-outputid="a0d5de50-31d8-47dd-b156-bc623b45cbd8" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"accuracy"</span>], label <span class="op">=</span> <span class="st">"training"</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"val_accuracy"</span>], label <span class="op">=</span> <span class="st">"validation"</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"epoch"</span>, ylabel <span class="op">=</span> <span class="st">"accuracy"</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW5_files/figure-html/cell-30-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Wow! Look at the accuracy of the validation! <strong>We now have an accuracy ranging from 95% to 97%.</strong> This performed way better than model 1 where the highest accuracy we achieved was a 68%. Notice on the plot above, we also see that there is no overfitting present in model 4. The training accuracy never surpassed the validation accuracy.</p>
+</section>
+<section id="testing-data" class="level1">
+<h1>Testing Data</h1>
+<p>Since model 4 preformed the best, lets try it on the testing dataset.</p>
+<div id="cell-62" class="cell" data-outputid="e81ee7d6-89ec-4977-8d74-c42a32935184" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>model4.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>              loss<span class="op">=</span>keras.losses.SparseCategoricalCrossentropy(from_logits<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model4.fit(test_ds,</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>                     epochs<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>                     validation_data<span class="op">=</span>validation_ds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/20
+37/37 [==============================] - 9s 129ms/step - loss: 0.3156 - accuracy: 0.8233 - val_loss: 0.0779 - val_accuracy: 0.9716
+Epoch 2/20
+37/37 [==============================] - 3s 70ms/step - loss: 0.3116 - accuracy: 0.8199 - val_loss: 0.0764 - val_accuracy: 0.9733
+Epoch 3/20
+37/37 [==============================] - 3s 68ms/step - loss: 0.3155 - accuracy: 0.8242 - val_loss: 0.0765 - val_accuracy: 0.9751
+Epoch 4/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.3001 - accuracy: 0.8263 - val_loss: 0.0773 - val_accuracy: 0.9759
+Epoch 5/20
+37/37 [==============================] - 3s 71ms/step - loss: 0.3034 - accuracy: 0.8276 - val_loss: 0.0772 - val_accuracy: 0.9733
+Epoch 6/20
+37/37 [==============================] - 3s 70ms/step - loss: 0.3053 - accuracy: 0.8379 - val_loss: 0.0800 - val_accuracy: 0.9729
+Epoch 7/20
+37/37 [==============================] - 2s 67ms/step - loss: 0.2832 - accuracy: 0.8379 - val_loss: 0.0815 - val_accuracy: 0.9725
+Epoch 8/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.2881 - accuracy: 0.8315 - val_loss: 0.0894 - val_accuracy: 0.9699
+Epoch 9/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.2975 - accuracy: 0.8310 - val_loss: 0.0837 - val_accuracy: 0.9695
+Epoch 10/20
+37/37 [==============================] - 3s 71ms/step - loss: 0.3035 - accuracy: 0.8237 - val_loss: 0.0854 - val_accuracy: 0.9686
+Epoch 11/20
+37/37 [==============================] - 3s 69ms/step - loss: 0.2932 - accuracy: 0.8267 - val_loss: 0.0881 - val_accuracy: 0.9673
+Epoch 12/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.2901 - accuracy: 0.8379 - val_loss: 0.0852 - val_accuracy: 0.9712
+Epoch 13/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.2894 - accuracy: 0.8349 - val_loss: 0.0815 - val_accuracy: 0.9699
+Epoch 14/20
+37/37 [==============================] - 3s 71ms/step - loss: 0.2775 - accuracy: 0.8405 - val_loss: 0.0830 - val_accuracy: 0.9699
+Epoch 15/20
+37/37 [==============================] - 2s 67ms/step - loss: 0.3026 - accuracy: 0.8255 - val_loss: 0.0919 - val_accuracy: 0.9647
+Epoch 16/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.2900 - accuracy: 0.8276 - val_loss: 0.0803 - val_accuracy: 0.9721
+Epoch 17/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.2796 - accuracy: 0.8435 - val_loss: 0.0833 - val_accuracy: 0.9699
+Epoch 18/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.2816 - accuracy: 0.8332 - val_loss: 0.0871 - val_accuracy: 0.9673
+Epoch 19/20
+37/37 [==============================] - 3s 71ms/step - loss: 0.2751 - accuracy: 0.8255 - val_loss: 0.0777 - val_accuracy: 0.9733
+Epoch 20/20
+37/37 [==============================] - 2s 68ms/step - loss: 0.2858 - accuracy: 0.8319 - val_loss: 0.0808 - val_accuracy: 0.9708</code></pre>
+</div>
+</div>
+<div id="cell-63" class="cell" data-outputid="3adb50b3-8abf-46c3-d527-9a264dc56d2b" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"accuracy"</span>], label <span class="op">=</span> <span class="st">"training"</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"val_accuracy"</span>], label <span class="op">=</span> <span class="st">"validation"</span>)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"epoch"</span>, ylabel <span class="op">=</span> <span class="st">"accuracy"</span>)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW5_files/figure-html/cell-32-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We see that the accuracy on our testing data is still really high, ranging from 96% to 97%. That is super impressive!</p>
+</section>
+<section id="final-takeaways" class="level1">
+<h1>Final Takeaways</h1>
+<p>Hope this tutorial was helpful in learning about image classifications using Keras!</p>
 
 
+</section>
 
 </main> <!-- /main -->
+<script type="application/vnd.jupyter.widget-state+json">
+{"0bab16f5b3404879966018edae69ec2c":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"0c3506351d2b4e4da04c4d7924e57d1a":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"1d21b5ba200446589033ae4450a70473":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"1f97cdea663f49a5931d9effb826faab":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_a4c4de64e7154065a38a63ca521d2004","placeholder":"​","style":"IPY_MODEL_bc1c84449735445f8bdaf78be3b30c2b","value":"Generating train examples...:  99%"}},"2846ca880cc34495b6d02bf35876adfe":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"FloatProgressModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"FloatProgressModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"ProgressView","bar_style":"success","description":"","description_tooltip":null,"layout":"IPY_MODEL_6323bc158cf140d0baa0cca2c3b01d4f","max":1,"min":0,"orientation":"horizontal","style":"IPY_MODEL_588f4fa7c60841b784397eee4ddffc91","value":1}},"36b39d3b4fbb430497e70b65bd683615":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"3747d2ab0cf7463c9e25f107203dc128":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"3e5ab64230cd457aaaab65e0e063403c":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_0bab16f5b3404879966018edae69ec2c","placeholder":"​","style":"IPY_MODEL_987bdd35f56e414b9d92c55fd48dbcfe","value":"Dl Completed...: 100%"}},"462193402a354e09910bc67f2c693afc":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_c908abe8580f4feaac9d9e823e05a4ca","placeholder":"​","style":"IPY_MODEL_ae10e957f08942f5b55f5255b3589cd1","value":"Dl Size...: 100%"}},"588f4fa7c60841b784397eee4ddffc91":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"ProgressStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"ProgressStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","bar_color":null,"description_width":""}},"6071bcc79d5843f88f4b146ef6afce82":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_931bd9fdafab403eadfaa226b49ee04c","placeholder":"​","style":"IPY_MODEL_da2f8a7cd6114523ad4c4a37dee82cfa","value":"Generating splits...: 100%"}},"6323bc158cf140d0baa0cca2c3b01d4f":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":"20px"}},"63526cec0ead4e7a9f06161685faf1d2":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"6bea6b5218aa4a2797092e95dba69c7b":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"737a259041c0448bbba23ea6871cdcf2":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"786e43feaa024cb0ab76da8d23081ee8":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"7a61eb77c4cc41e0ab542f6e0e602060":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"7ae40d3f0ffb49b8b5219ce2b6691b55":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"7b0e06868ef74f42b5e76457dc0af753":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HBoxModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HBoxModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HBoxView","box_style":"","children":["IPY_MODEL_eb468ab7d7604ee7abeb4418de2ff676","IPY_MODEL_7d446e8da837499aafd378888b233b94","IPY_MODEL_ccc2ae9eda024f28a40085e7bddf2fa3"],"layout":"IPY_MODEL_f503f1403ac34342912f82d12a88aae2"}},"7d446e8da837499aafd378888b233b94":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"FloatProgressModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"FloatProgressModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"ProgressView","bar_style":"","description":"","description_tooltip":null,"layout":"IPY_MODEL_eb7a419c3b14412c965b23fba22680d3","max":23262,"min":0,"orientation":"horizontal","style":"IPY_MODEL_ef618561a4364660b7c7072aabb07f06","value":23262}},"8147adceb26345ba82500f9bda9e5ba8":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"81d9702d5f89437eb856f90dd7bd284a":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_63526cec0ead4e7a9f06161685faf1d2","placeholder":"​","style":"IPY_MODEL_8147adceb26345ba82500f9bda9e5ba8","value":" 786/786 [00:28&lt;00:00, 25.57 MiB/s]"}},"87940ff3970b46788e37dbd032c921e0":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HBoxModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HBoxModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HBoxView","box_style":"","children":["IPY_MODEL_3e5ab64230cd457aaaab65e0e063403c","IPY_MODEL_92b41ceaf18a4791bd17ef69150dca35","IPY_MODEL_dd52250faef942869905646eebde485c"],"layout":"IPY_MODEL_7a61eb77c4cc41e0ab542f6e0e602060"}},"92b41ceaf18a4791bd17ef69150dca35":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"FloatProgressModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"FloatProgressModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"ProgressView","bar_style":"success","description":"","description_tooltip":null,"layout":"IPY_MODEL_a00fac2e8c474b5c801847ee862fabc0","max":1,"min":0,"orientation":"horizontal","style":"IPY_MODEL_c4e8b9e54692425eb65a546897b802b9","value":1}},"931bd9fdafab403eadfaa226b49ee04c":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"98275e45e3ed45c69093372f1bdabb0b":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_36b39d3b4fbb430497e70b65bd683615","placeholder":"​","style":"IPY_MODEL_ca15823463dd4639b4935dd3340edb67","value":" 1/1 [01:27&lt;00:00, 87.52s/ splits]"}},"987bdd35f56e414b9d92c55fd48dbcfe":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"9c50f36222c44efe8314b076d8e08ec8":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HBoxModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HBoxModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HBoxView","box_style":"","children":["IPY_MODEL_1f97cdea663f49a5931d9effb826faab","IPY_MODEL_c461b83e6e1b487c878cc947398ba3eb","IPY_MODEL_f7e9d8f6df4d4779a4d66364cc57fac4"],"layout":"IPY_MODEL_a25d0166db1441a2aa62390e18d686fa"}},"a00fac2e8c474b5c801847ee862fabc0":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":"20px"}},"a25d0166db1441a2aa62390e18d686fa":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":"hidden","width":null}},"a4c4de64e7154065a38a63ca521d2004":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"aae89499cae1495097c468112d6d1b82":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"ProgressStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"ProgressStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","bar_color":null,"description_width":""}},"ad959da75d6c47b6b963700713ad792a":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HBoxModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HBoxModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HBoxView","box_style":"","children":["IPY_MODEL_462193402a354e09910bc67f2c693afc","IPY_MODEL_2846ca880cc34495b6d02bf35876adfe","IPY_MODEL_81d9702d5f89437eb856f90dd7bd284a"],"layout":"IPY_MODEL_ff1e1172fe18465babbcc7ecbb224c5c"}},"ae10e957f08942f5b55f5255b3589cd1":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"bc1c84449735445f8bdaf78be3b30c2b":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"bee9cf8e26b2447dbfb234c99cc610fe":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"c461b83e6e1b487c878cc947398ba3eb":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"FloatProgressModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"FloatProgressModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"ProgressView","bar_style":"","description":"","description_tooltip":null,"layout":"IPY_MODEL_737a259041c0448bbba23ea6871cdcf2","max":23262,"min":0,"orientation":"horizontal","style":"IPY_MODEL_fa81436f4c694707966ea449de937bbe","value":23262}},"c4e8b9e54692425eb65a546897b802b9":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"ProgressStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"ProgressStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","bar_color":null,"description_width":""}},"c908abe8580f4feaac9d9e823e05a4ca":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"ca15823463dd4639b4935dd3340edb67":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"caab17f06dee4eb49bdb94b79d8d2e4c":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"FloatProgressModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"FloatProgressModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"ProgressView","bar_style":"","description":"","description_tooltip":null,"layout":"IPY_MODEL_3747d2ab0cf7463c9e25f107203dc128","max":1,"min":0,"orientation":"horizontal","style":"IPY_MODEL_aae89499cae1495097c468112d6d1b82","value":1}},"ccc2ae9eda024f28a40085e7bddf2fa3":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_1d21b5ba200446589033ae4450a70473","placeholder":"​","style":"IPY_MODEL_0c3506351d2b4e4da04c4d7924e57d1a","value":" 23132/23262 [00:04&lt;00:00, 3712.66 examples/s]"}},"da2f8a7cd6114523ad4c4a37dee82cfa":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"dd52250faef942869905646eebde485c":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_786e43feaa024cb0ab76da8d23081ee8","placeholder":"​","style":"IPY_MODEL_e6d66051ba6c41338dcaa86d0a1a9ddf","value":" 1/1 [00:28&lt;00:00, 28.64s/ url]"}},"e6d66051ba6c41338dcaa86d0a1a9ddf":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"eb468ab7d7604ee7abeb4418de2ff676":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_bee9cf8e26b2447dbfb234c99cc610fe","placeholder":"​","style":"IPY_MODEL_6bea6b5218aa4a2797092e95dba69c7b","value":"Shuffling /root/tensorflow_datasets/cats_vs_dogs/4.0.1.incompleteCU5U9W/cats_vs_dogs-train.tfrecord*...:  99%"}},"eb7a419c3b14412c965b23fba22680d3":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"ed9e680c14344151822fa518cefba85d":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":"hidden","width":null}},"ef618561a4364660b7c7072aabb07f06":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"ProgressStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"ProgressStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","bar_color":null,"description_width":""}},"f08003d3265249ee8d96baab89334bad":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"DescriptionStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"DescriptionStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","description_width":""}},"f503f1403ac34342912f82d12a88aae2":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":"hidden","width":null}},"f7e9d8f6df4d4779a4d66364cc57fac4":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HTMLView","description":"","description_tooltip":null,"layout":"IPY_MODEL_7ae40d3f0ffb49b8b5219ce2b6691b55","placeholder":"​","style":"IPY_MODEL_f08003d3265249ee8d96baab89334bad","value":" 23051/23262 [01:21&lt;00:01, 176.48 examples/s]"}},"f9285bcf59a9491e898b8f4bbe4f9f0e":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"HBoxModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"HBoxModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"1.5.0","_view_name":"HBoxView","box_style":"","children":["IPY_MODEL_6071bcc79d5843f88f4b146ef6afce82","IPY_MODEL_caab17f06dee4eb49bdb94b79d8d2e4c","IPY_MODEL_98275e45e3ed45c69093372f1bdabb0b"],"layout":"IPY_MODEL_ed9e680c14344151822fa518cefba85d"}},"fa81436f4c694707966ea449de937bbe":{"model_module":"@jupyter-widgets/controls","model_module_version":"1.5.0","model_name":"ProgressStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"1.5.0","_model_name":"ProgressStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","bar_color":null,"description_width":""}},"ff1e1172fe18465babbcc7ecbb224c5c":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}}}
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
