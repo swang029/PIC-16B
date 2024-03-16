@@ -194,7 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>In this blog, I will be covering how to create a fake news classifier using the library Keras. We will be using Google Colab for this demonstration.</p>
 <p>First, let’s begin by importing all the necessary libraries.</p>
-<div id="cell-2" class="cell" data-execution_count="92">
+<div id="cell-2" class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
@@ -214,7 +214,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>pio.templates.default <span class="op">=</span> <span class="st">"plotly_white"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>After you are done, we can now import the dataset. We will be using data from the following github: “https://github.com/PhilChodrow/PIC16b/blob/master/datasets/fake_news_train.csv?raw=true”. Make sure to pass in the dataset using pd.read_csv.</p>
-<div id="cell-4" class="cell" data-outputid="018da1cc-17ea-43bf-e021-3a3af6830ee8" data-execution_count="93">
+<div id="cell-4" class="cell" data-outputid="018da1cc-17ea-43bf-e021-3a3af6830ee8">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>train_url <span class="op">=</span> <span class="st">"https://github.com/PhilChodrow/PIC16b/blob/master/datasets/fake_news_train.csv?raw=true"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(train_url)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -480,7 +480,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>When we first read in the data, we see that there is an extra column in addition to title, text, and fake. We can simply remove that column because that is not important and will not give us any helpful information.</p>
-<div id="cell-6" class="cell" data-outputid="cc3f9ae4-c7d9-4706-c19d-49b554ae58e1" data-execution_count="94">
+<div id="cell-6" class="cell" data-outputid="cc3f9ae4-c7d9-4706-c19d-49b554ae58e1">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data  <span class="op">=</span> data[[<span class="st">"title"</span>, <span class="st">"text"</span>, <span class="st">"fake"</span>]]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="94">
@@ -740,7 +740,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>We can now only see title, text, and fake on our dataset!</p>
 <p>Next, let’s create a function to clean up our dataset. We want to get ride of all the stopword’s in our data as well as make all the letter’s lowercase. We want to also return a tf.data.Dataset, which consists of two inputs and one output. The two inputs should be title and text, while the output should be fake. In the function, you can see that we also included batch. Batch will help increase the speed of training especially since we are working with a large dataset.</p>
-<div id="cell-8" class="cell" data-outputid="ca0cd676-8fd3-4223-b906-643e23b0d584" data-execution_count="95">
+<div id="cell-8" class="cell" data-outputid="ca0cd676-8fd3-4223-b906-643e23b0d584">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nltk</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> stopwords</span>
@@ -771,11 +771,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 [nltk_data]   Package stopwords is already up-to-date!</code></pre>
 </div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="96">
+<div id="cell-9" class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> make_dataset(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>After we have passed our dataset through the function we have just created, we can split our data for training. We will leave 20% of the data to be used for validation and the remaining 80% for training.</p>
-<div id="cell-11" class="cell" data-outputid="1e4ec172-9aee-4491-fed3-db659fe49a3a" data-execution_count="97">
+<div id="cell-11" class="cell" data-outputid="1e4ec172-9aee-4491-fed3-db659fe49a3a">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.shuffle(buffer_size <span class="op">=</span> <span class="bu">len</span>(data), reshuffle_each_iteration<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>train_size <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.8</span><span class="op">*</span><span class="bu">len</span>(data))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>val_size   <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.2</span><span class="op">*</span><span class="bu">len</span>(data))</span>
@@ -789,7 +789,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Next, let us look at base rate. We can calculate the base rate by looking at the number of fake and real articles in our dataset. To do so, let’s create a for loop.</p>
-<div id="cell-13" class="cell" data-outputid="5835ccc0-e917-4a82-dc3f-bf7dbd9eb108" data-execution_count="98">
+<div id="cell-13" class="cell" data-outputid="5835ccc0-e917-4a82-dc3f-bf7dbd9eb108">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Counting real and fake articles</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>real <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fake <span class="op">=</span> <span class="dv">0</span></span>
@@ -817,7 +817,7 @@ Fake title/text: 9361</code></pre>
 <section id="text-vectorization" class="level1">
 <h1>Text Vectorization</h1>
 <p>We will be using the following code to prepare a text vectorization layer for the tensorflow models.</p>
-<div id="cell-16" class="cell" data-execution_count="99">
+<div id="cell-16" class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
@@ -845,7 +845,7 @@ Fake title/text: 9361</code></pre>
 <section id="model-1" class="level1">
 <h1>Model 1</h1>
 <p>Let’s start by creating a model using only the article title as an input. We will be utilizing the text vecorization created above.</p>
-<div id="cell-18" class="cell" data-execution_count="100">
+<div id="cell-18" class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model_title_only <span class="op">=</span> tf.keras.Sequential([</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    title_vectorize_layer,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    layers.Embedding(input_dim<span class="op">=</span>size_vocabulary, output_dim<span class="op">=</span><span class="dv">64</span>),</span>
@@ -857,7 +857,7 @@ Fake title/text: 9361</code></pre>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>train_combined <span class="op">=</span> train.<span class="bu">map</span>(<span class="kw">lambda</span> x, y: (x[<span class="dv">0</span>], y))</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>val_combined <span class="op">=</span> val.<span class="bu">map</span>(<span class="kw">lambda</span> x, y: (x[<span class="dv">0</span>], y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-19" class="cell" data-outputid="a02089ad-7a96-4a58-aa81-11f74f03b6d3" data-execution_count="101">
+<div id="cell-19" class="cell" data-outputid="a02089ad-7a96-4a58-aa81-11f74f03b6d3">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model_title_only.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                          loss<span class="op">=</span><span class="st">'binary_crossentropy'</span>,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                          metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
@@ -907,7 +907,7 @@ Epoch 20/20
 </div>
 </div>
 <p>Let’s generate a summary of our model.</p>
-<div id="cell-21" class="cell" data-outputid="5ee8ab70-6f79-4219-82de-7c1a92149e2b" data-execution_count="103">
+<div id="cell-21" class="cell" data-outputid="5ee8ab70-6f79-4219-82de-7c1a92149e2b">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model_title_only.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model: "sequential_7"
@@ -934,7 +934,7 @@ _________________________________________________________________</code></pre>
 </div>
 </div>
 <p>Looking at the plot below, we can see that the accuracy of our model is really high! However, in the previous blog, remember that if the training accuracy is higher than the validation accuracy, there is a possible of overfitting in our model. Let’s attempt a different model to see if overfitting will not occur.</p>
-<div id="cell-23" class="cell" data-outputid="c45ae901-d0fe-4405-c2b0-63e2ddc17faf" data-execution_count="104">
+<div id="cell-23" class="cell" data-outputid="c45ae901-d0fe-4405-c2b0-63e2ddc17faf">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history_title_only.history[<span class="st">"accuracy"</span>], label <span class="op">=</span> <span class="st">"training"</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt.plot(history_title_only.history[<span class="st">"val_accuracy"</span>], label <span class="op">=</span> <span class="st">"validation"</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"epoch"</span>, ylabel <span class="op">=</span> <span class="st">"accuracy"</span>)</span>
@@ -948,7 +948,7 @@ _________________________________________________________________</code></pre>
 </div>
 </div>
 <p>Let’s also create a visualization of our model so we can see exactly the layers and the shapes.</p>
-<div id="cell-25" class="cell" data-outputid="d06f83e7-2795-4b16-a676-6cf4d6f42fc8" data-execution_count="105">
+<div id="cell-25" class="cell" data-outputid="d06f83e7-2795-4b16-a676-6cf4d6f42fc8">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>utils.plot_model(model_title_only, <span class="st">"output_filename.png"</span>,</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                       show_shapes<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                       show_layer_names<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -964,7 +964,7 @@ _________________________________________________________________</code></pre>
 <section id="model-2" class="level1">
 <h1>Model 2</h1>
 <p>Now, since we only used title for our previous model, let’s try to only use text for our second model. We will use the same text vectorization method as we did before.</p>
-<div id="cell-27" class="cell" data-execution_count="106">
+<div id="cell-27" class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>text_vectorize_layer <span class="op">=</span> tf.keras.layers.TextVectorization(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    standardize<span class="op">=</span>standardization,</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    max_tokens<span class="op">=</span>size_vocabulary, <span class="co"># only consider this many words</span></span>
@@ -974,7 +974,7 @@ _________________________________________________________________</code></pre>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>text_vectorize_layer.adapt(train.<span class="bu">map</span>(<span class="kw">lambda</span> x, y: x[<span class="dv">1</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we can start building our model using only text.</p>
-<div id="cell-29" class="cell" data-execution_count="107">
+<div id="cell-29" class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model_text_only <span class="op">=</span> tf.keras.Sequential([</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    text_vectorize_layer,</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    layers.Embedding(input_dim<span class="op">=</span>size_vocabulary, output_dim<span class="op">=</span><span class="dv">64</span>),</span>
@@ -986,7 +986,7 @@ _________________________________________________________________</code></pre>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>train_combined <span class="op">=</span> train.<span class="bu">map</span>(<span class="kw">lambda</span> x, y: (x[<span class="dv">1</span>], y))</span>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>val_combined <span class="op">=</span> val.<span class="bu">map</span>(<span class="kw">lambda</span> x, y: (x[<span class="dv">1</span>], y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-30" class="cell" data-outputid="390148d0-63dc-4add-bdc6-ed378113168c" data-execution_count="108">
+<div id="cell-30" class="cell" data-outputid="390148d0-63dc-4add-bdc6-ed378113168c">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model_text_only.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                          loss<span class="op">=</span><span class="st">'binary_crossentropy'</span>,</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                          metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
@@ -1036,7 +1036,7 @@ Epoch 20/20
 </div>
 </div>
 <p>Now that we have completed our model, let’s output the summary.</p>
-<div id="cell-32" class="cell" data-outputid="a067106c-3fb5-46f5-b193-7894b6e0b077" data-execution_count="109">
+<div id="cell-32" class="cell" data-outputid="a067106c-3fb5-46f5-b193-7894b6e0b077">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>model_text_only.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model: "sequential_8"
@@ -1063,7 +1063,7 @@ _________________________________________________________________</code></pre>
 </div>
 </div>
 <p>The accuracy of our model is still very high with accuracy close to 98%. However, in the plot, we can still observe overfitting. Let’s try a different model to see if we can prevent overfitting from occuring.</p>
-<div id="cell-34" class="cell" data-outputid="d914923a-9f04-474e-b148-4a9c0c14b796" data-execution_count="110">
+<div id="cell-34" class="cell" data-outputid="d914923a-9f04-474e-b148-4a9c0c14b796">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history_text_only.history[<span class="st">"accuracy"</span>], label <span class="op">=</span> <span class="st">"training"</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>plt.plot(history_text_only.history[<span class="st">"val_accuracy"</span>], label <span class="op">=</span> <span class="st">"validation"</span>)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"epoch"</span>, ylabel <span class="op">=</span> <span class="st">"accuracy"</span>)</span>
@@ -1077,7 +1077,7 @@ _________________________________________________________________</code></pre>
 </div>
 </div>
 <p>Let’s also create a visualization of our model so we can see all the different layers involved.</p>
-<div id="cell-36" class="cell" data-outputid="fefc7b30-4917-452d-882d-b237d20abeca" data-execution_count="111">
+<div id="cell-36" class="cell" data-outputid="fefc7b30-4917-452d-882d-b237d20abeca">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>utils.plot_model(model_text_only, <span class="st">"output_filename.png"</span>,</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                       show_shapes<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                       show_layer_names<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1093,7 +1093,7 @@ _________________________________________________________________</code></pre>
 <section id="model-3" class="level1">
 <h1>Model 3</h1>
 <p>Last but not least, let’s create a model that uses both title and text to predict fake news.</p>
-<div id="cell-38" class="cell" data-execution_count="88">
+<div id="cell-38" class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define title and text inputs</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>title_input <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">1</span>,), name<span class="op">=</span><span class="st">"title"</span>, dtype<span class="op">=</span><span class="st">"string"</span>)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>text_input <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">1</span>,), name<span class="op">=</span><span class="st">"text"</span>, dtype<span class="op">=</span><span class="st">"string"</span>)</span>
@@ -1125,7 +1125,7 @@ _________________________________________________________________</code></pre>
 <span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">=</span>fake_pred</span>
 <span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-39" class="cell" data-outputid="f1e1ab0f-5af6-451c-e920-38b526e3d6fe" data-execution_count="89">
+<div id="cell-39" class="cell" data-outputid="f1e1ab0f-5af6-451c-e920-38b526e3d6fe">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile the model</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>combine_model.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                          loss<span class="op">=</span><span class="st">'binary_crossentropy'</span>,</span>
@@ -1177,7 +1177,7 @@ Epoch 20/20
 </div>
 </div>
 <p>Wow! We can see that the accuracy of this model is close to 100%! We can see that the issue with overfitting has been greatly improve using this model.</p>
-<div id="cell-41" class="cell" data-outputid="b053cf41-3007-4e83-dbf8-fb349d68726a" data-execution_count="90">
+<div id="cell-41" class="cell" data-outputid="b053cf41-3007-4e83-dbf8-fb349d68726a">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history_combine.history[<span class="st">"accuracy"</span>], label <span class="op">=</span> <span class="st">"training"</span>)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>plt.plot(history_combine.history[<span class="st">"val_accuracy"</span>], label <span class="op">=</span> <span class="st">"validation"</span>)</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"epoch"</span>, ylabel <span class="op">=</span> <span class="st">"accuracy"</span>)</span>
@@ -1191,7 +1191,7 @@ Epoch 20/20
 </div>
 </div>
 <p>Let’s create a visualization of our model to see all the layers involved. This one is more complex due to the use of two inputs.</p>
-<div id="cell-43" class="cell" data-outputid="fa40bd83-143a-4738-9848-de73bc379086" data-execution_count="87">
+<div id="cell-43" class="cell" data-outputid="fa40bd83-143a-4738-9848-de73bc379086">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>utils.plot_model(combine_model, <span class="st">"output_filename.png"</span>,</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                       show_shapes<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                       show_layer_names<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1208,7 +1208,7 @@ Epoch 20/20
 <h1>Model Evaluation</h1>
 <p>Since the best performing model is the one using both title and text, let’s try to run our testing dataset.</p>
 <p>We will import the dataset from the following github: “https://github.com/PhilChodrow/PIC16b/blob/master/datasets/fake_news_test.csv?raw=true”. Make sure to clean the dataset to get rid of any unhelpful columns.</p>
-<div id="cell-46" class="cell" data-outputid="46898b12-d38a-4ebd-9758-5771cc52e66f" data-execution_count="45">
+<div id="cell-46" class="cell" data-outputid="46898b12-d38a-4ebd-9758-5771cc52e66f">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>test_url <span class="op">=</span> <span class="st">"https://github.com/PhilChodrow/PIC16b/blob/master/datasets/fake_news_test.csv?raw=true"</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> pd.read_csv(test_url)</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> test[[<span class="st">"title"</span>, <span class="st">"text"</span>, <span class="st">"fake"</span>]]</span>
@@ -1469,11 +1469,11 @@ Epoch 20/20
 </div>
 </div>
 <p>Remember the function we created a while ago, make sure to use that function to clean our testing dataset.</p>
-<div id="cell-48" class="cell" data-execution_count="46">
+<div id="cell-48" class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>data2 <span class="op">=</span> make_dataset(test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we will be using evaluate() to evaluate how our model does on the testing dataset. We can see that the accuracy is still very high with 98.9% accuracy!</p>
-<div id="cell-50" class="cell" data-outputid="3e47102b-fb21-4da0-8658-1f389b84e59e" data-execution_count="47">
+<div id="cell-50" class="cell" data-outputid="3e47102b-fb21-4da0-8658-1f389b84e59e">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>combine_model.evaluate(data2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>225/225 [==============================] - 2s 10ms/step - loss: 0.0327 - accuracy: 0.9890</code></pre>
@@ -1486,7 +1486,7 @@ Epoch 20/20
 <section id="embedding-visualization" class="level1">
 <h1>Embedding Visualization</h1>
 <p>The point of embedding is to place words on certain vectors and place words with similar meanings in close proximity to each other. The following code generates a dataframe of the position of each word. We can use the following dataframe to plot the words and see its relationship with other words.</p>
-<div id="cell-52" class="cell" data-outputid="d5040f13-824c-454f-d3ce-ca0605fa35e2" data-execution_count="86">
+<div id="cell-52" class="cell" data-outputid="d5040f13-824c-454f-d3ce-ca0605fa35e2">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> combine_model.get_layer(<span class="st">'embedding_26'</span>).get_weights()[<span class="dv">0</span>] <span class="co"># get the weights from the embedding layer</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> title_vectorize_layer.get_vocabulary()                <span class="co"># get the vocabulary from our data prep for later</span></span>
@@ -1793,7 +1793,7 @@ Epoch 20/20
 </div>
 </div>
 <p>Below, let’s generate an interactive plot that will allow people to hover over a dot and look at the words to see the associations with each other. For example, if you hover over the point x0 = -1.689893 and x1 = 0.2999115, you will encounter the word illegal. If you move your cursor around illegal, you will find other words like shrieff, holds, undercover, fighting, criticizes, and record. These words are greatly related to each other which shows that our embedding is working properly. We often see these words in articles related to crimes or the government. Feel free to play around the plot to find other associations!</p>
-<div id="cell-54" class="cell" data-outputid="a7305ce6-8483-4248-bc53-d932ec35a8d3" data-execution_count="91">
+<div id="cell-54" class="cell" data-outputid="a7305ce6-8483-4248-bc53-d932ec35a8d3">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter(embedding_df,</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>                 x <span class="op">=</span> <span class="st">"x0"</span>,</span>
@@ -1836,6 +1836,12 @@ if (outputEl) {{
 
 
 </div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="HW6_files/figure-html/cell-55-1-scatter.png" class="img-fluid figure-img"></p>
+<figcaption>scatter.png</figcaption>
+</figure>
 </div>
 </section>
 <section id="final-takeaway" class="level1">
